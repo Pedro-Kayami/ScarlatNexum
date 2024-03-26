@@ -1,4 +1,4 @@
-import { BSON, ObjectId } from 'mongodb'
+import { BSON, Collection, ObjectId } from 'mongodb'
 
 import { getClient } from '@/assets/database/dataBase.js'
 
@@ -79,7 +79,7 @@ async function addMessageUser(
     const dateMessage = new Date()
 
     const db = await getClient()
-    const collection: unknown = db.collection('MENSAGENS')
+    const collection: Collection = db.collection('MENSAGENS')
     const uuid = new BSON.ObjectId()
     const conversationId = new BSON.ObjectId(
       (message as { conversationId: string }).conversationId,
@@ -110,12 +110,16 @@ async function addMessageUser(
     await collection.insertOne(data)
 
     if (to === 'U') {
-      await updateName(conversationId, message.name, db, message.photo)
+      await updateName(
+        conversationId,
+        (message as { name: string }).name,
+        (message as { photo: unknown }).photo,
+      )
     }
 
     return {
       _id: uuid.toHexString(),
-      conversationId: message.conversationId,
+      conversationId: (message as { conversationId: string }).conversationId,
       message: dataretorno,
       status: 'success',
     }
@@ -128,14 +132,14 @@ async function addMessageUser(
 async function updateName(
   conversationId: ObjectId,
   name: string,
-  db: unknown,
   photo: unknown,
 ) {
+  const db = await getClient()
   const filter = {
     _id: conversationId,
   }
-  const collection: unknown = db.collection('PROTOCOLOS')
-  await collection.updateMunknown(filter, {
+  const collection: Collection = db.collection('PROTOCOLOS')
+  await collection.updateMany(filter, {
     $set: {
       name,
       photo,
@@ -144,12 +148,13 @@ async function updateName(
 }
 
 async function createConversationId(message: Message): Promise<unknown> {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     try {
       const dateMessage = new Date() // Substitua isso pela sua data original
 
       const db = await getClient()
-      const collection: unknown = db.collection('PROTOCOLOS')
+      const collection: Collection = db.collection('PROTOCOLOS')
       const uuid = new BSON.ObjectId()
 
       const data = {
@@ -177,6 +182,7 @@ async function createConversationId(message: Message): Promise<unknown> {
 }
 
 export async function getExisting(conversationId: string): Promise<unknown> {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     try {
       const db = await getClient()
@@ -200,19 +206,26 @@ export async function getExisting(conversationId: string): Promise<unknown> {
 }
 
 export async function getProviderResp(params: unknown) {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     try {
       const db = await getClient()
       const collection = db.collection('PROTOCOLOS')
 
       const result: unknown = await collection.findOne({
-        _id: new BSON.ObjectId(params.conversationId),
+        _id: new BSON.ObjectId(
+          (params as { conversationId: string }).conversationId,
+        ),
         status: 'A',
       })
 
       if (result) {
-        if (params.operatorId) {
-          if (params.operatorId.toString() == result.operatorId.toString()) {
+        const resultWithOperatorId = result as { operatorId: unknown }
+        if ((params as { operatorId?: unknown }).operatorId) {
+          if (
+            (params as { operatorId?: unknown }).operatorId.toString() ===
+            resultWithOperatorId.operatorId.toString()
+          ) {
             resolve(true)
           } else {
             resolve(false)
@@ -231,12 +244,13 @@ export async function getProviderResp(params: unknown) {
 }
 
 async function getUUID(identifier: string, provider: string): Promise<unknown> {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     try {
       const db = await getClient()
       const collection = db.collection('PROTOCOLOS')
 
-      const result: unknown = await collection.findOne({
+      const result: { _id: unknown } = await collection.findOne({
         identifier,
         provider,
         status: 'A',
@@ -258,18 +272,19 @@ export async function updateOperatorId(
   conversationId: string,
   operatorId: number,
 ): Promise<unknown> {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     try {
       const db = await getClient()
-      const collection = db.collection('PROTOCOLOS')
+      const collection: Collection = db.collection('PROTOCOLOS')
 
       const result: unknown = await collection.findOne({
         _id: new BSON.ObjectId(conversationId),
         status: 'A',
       })
 
-      if (!result.operatorId) {
-        await collection.updateMunknown(
+      if (!(result as { operatorId: unknown }).operatorId) {
+        await collection.updateMany(
           {
             _id: new BSON.ObjectId(conversationId),
           },
@@ -289,6 +304,7 @@ export async function updateOperatorId(
 }
 
 export async function getReadMessage(idMessage: string) {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     try {
       const db = await getClient()
@@ -312,12 +328,13 @@ export async function getReadMessage(idMessage: string) {
 }
 
 export async function updateReading(idMessage: string): Promise<unknown> {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     try {
       const db = await getClient()
-      const collection = db.collection('MENSAGENS')
+      const collection: Collection = db.collection('MENSAGENS')
 
-      await collection.updateMunknown(
+      await collection.updateMany(
         {
           _id: new BSON.ObjectId(idMessage),
         },
@@ -337,12 +354,13 @@ export async function updateReading(idMessage: string): Promise<unknown> {
 }
 
 export async function createConversation(params: unknown) {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     const dateMessage = new Date() // Substitua isso pela sua data original
 
     const conversationIdExisting = await getUUID(
-      params.identifier,
-      params.provider,
+      (params as { identifier: string }).identifier,
+      (params as { provider: string }).provider,
     )
     if (conversationIdExisting) {
       return resolve({
@@ -352,21 +370,27 @@ export async function createConversation(params: unknown) {
       })
     }
     try {
-      const uuid = new BSON.ObjectId(params.conversationId)
+      const { conversationId } = params as { conversationId: string }
+      const uuid = new BSON.ObjectId(conversationId)
       const db = await getClient()
-      const collection = db.collection('PROTOCOLOS')
+      const collection: Collection = db.collection('PROTOCOLOS')
       const data: Message = {
         _id: uuid,
-        identifier: params.identifier,
+        identifier: (params as { identifier: string }).identifier,
         firstContact: dateMessage.toISOString(),
-        name: params.name,
-        operatorId: params.operatorId,
+        name: (params as { name: string }).name,
+        operatorId: (params as { operatorId: string }).operatorId,
         status: 'A',
-        provider: params.provider,
+        provider: (params as { provider: string }).provider,
         dateCreated: dateMessage.toISOString(),
       }
 
-      await collection.insertOne(data)
+      const newData: Message & { _id: ObjectId } = {
+        ...data,
+        _id: new BSON.ObjectId(),
+      }
+
+      await collection.insertOne(newData)
 
       resolve({
         status: 'sucesso',
@@ -374,6 +398,7 @@ export async function createConversation(params: unknown) {
       })
     } catch (error) {
       console.error('Error createConversation ', error)
+      // eslint-disable-next-line prefer-promise-reject-errors
       reject({
         status: 'error',
       })
@@ -382,10 +407,12 @@ export async function createConversation(params: unknown) {
 }
 
 export async function updateStatusConversation(params: unknown) {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
-    const conversationId = params.conversationId
-    const status = params.status || 'A'
-    const operatorId = params.operatorId // Assuming operatorId is passed in params
+    const { conversationId, operatorId } = params as {
+      conversationId: string
+      operatorId?: string
+    }
 
     if (!(await getExisting(conversationId))) {
       return resolve({
@@ -396,30 +423,28 @@ export async function updateStatusConversation(params: unknown) {
 
     try {
       const db = await getClient()
-      const collection = db.collection('PROTOCOLOS')
-
-      const updateObject: unknown = {
-        $set: {
-          status,
-        },
-      }
+      const collection: Collection = db.collection('PROTOCOLOS')
 
       if (operatorId !== undefined && operatorId !== null) {
-        updateObject.$set.operatorId = operatorId
+        const updateObject: { $set: { operatorId?: string } } = {
+          $set: {
+            operatorId,
+          },
+        }
+        await collection.updateMany(
+          {
+            _id: new BSON.ObjectId(conversationId),
+          },
+          updateObject,
+        )
       }
-
-      await collection.updateMunknown(
-        {
-          _id: new BSON.ObjectId(conversationId),
-        },
-        updateObject,
-      )
 
       resolve({
         status: 'success',
       })
     } catch (error) {
       console.error('Error updateStatusConversation ', error)
+      // eslint-disable-next-line prefer-promise-reject-errors
       reject({
         status: 'error',
       })

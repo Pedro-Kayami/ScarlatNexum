@@ -120,6 +120,7 @@ export async function sendAPI(req: Request, res: Response) {
       }
     }
   } catch (error) {
+    console.log(error)
     res.status(400).json({
       status: 'error',
     })

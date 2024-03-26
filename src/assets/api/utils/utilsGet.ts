@@ -158,7 +158,7 @@ async function getDataConversation(conversationId: string) {
 
     return data
   } catch (error) {
-    console.error(error)
+    console.error('Erro getDataConversation', error)
     return error
   }
 }

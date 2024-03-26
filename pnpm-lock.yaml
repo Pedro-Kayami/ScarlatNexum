@@ -41,6 +41,9 @@ dependencies:
   socket.io:
     specifier: ^4.7.5
     version: 4.7.5
+  typescript:
+    specifier: ^5.3.3
+    version: 5.4.3
 
 devDependencies:
   '@rocketseat/eslint-config':
@@ -94,9 +97,6 @@ devDependencies:
   tsx:
     specifier: ^4.7.1
     version: 4.7.1
-  typescript:
-    specifier: ^5.4.3
-    version: 5.4.3
 
 packages:
 

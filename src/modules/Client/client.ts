@@ -1,11 +1,10 @@
 import utilsAll from '@/modules/Packages/utils/utilsAll.js'
-
 // import ScarlatMetaWhats from '../Packages/meta_modules/ScarlatMetaWhats/Requisicoes/API.js'
-import ScarlatWhatsWpp from '../Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
+import { loadClient } from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
 
-function getClient(provider: string) {
+async function getClient(provider: string) {
   if (provider === 'whats_wpp') {
-    return ScarlatWhatsWpp.client
+    return await loadClient()
   } else if (provider === 'whats_meta') {
     // return ScarlatMetaWhats.client
   } else if (provider === 'telegram') {
@@ -16,16 +15,16 @@ function getClient(provider: string) {
 async function sendTextClient(params: unknown) {
   const { identifier, provider, message } = (
     params as {
-      body: { identifier: string; provider: string; message: unknown }
+      body: { identifier: string; provider: string; message: string }
     }
   ).body
-  const client = getClient(provider)
+  const client = await getClient(provider)
   try {
     if (provider === 'whats_wpp') {
       const identifierUs = identifier + '@c.us'
       client.sendText(identifierUs, message)
     } else if (provider === 'whats_meta' || provider === 'telegram') {
-      client.sendMessage(identifier, message)
+      // client.sendMessage(identifier, message)
     } else {
       throw Error()
     }
@@ -42,7 +41,7 @@ async function sendTextClient(params: unknown) {
 }
 
 async function sendTemplateClient(params: unknown) {
-  const { identifier, provider, message, components } = (
+  const { provider } = (
     params as {
       body: {
         identifier: string
@@ -52,10 +51,10 @@ async function sendTemplateClient(params: unknown) {
       }
     }
   ).body
-  const client = getClient(provider)
+  // const client = await getClient(provider)
   try {
     if (provider === 'whats_meta') {
-      client.sendTemplate(identifier, message, components)
+      // client.sendTemplate(identifier, message, components)
 
       return {
         status: 'success',
@@ -81,7 +80,7 @@ async function sendFileBase64Client(params: unknown) {
         body: { identifier: string; provider: string; message: unknown }
       }
     ).body
-    const client = getClient(provider)
+    const client = await getClient(provider)
     let base64 = (message as { fileBase: string }).fileBase
 
     const quality = 80 // Add the declaration for the quality variable
@@ -123,7 +122,7 @@ async function sendFileBase64Client(params: unknown) {
       status: 'success',
     }
   } catch (error) {
-    console.log(error)
+    console.log('Erro sendFileBase64Client', error)
     return {
       status: 'error',
     }

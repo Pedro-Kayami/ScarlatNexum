@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import '@/assets/Host/HostExpress.js'
+
 import * as dotenv from 'dotenv'
 
-import Hospedagem from '@/assets/Host/HostExpress.js'
 import { dispararHook } from '@/assets/Host/serverReturns/webhook/webhook.js'
 import { generateId } from '@/modules/Conversations/generateConversations.js'
 import meuEmitter from '@/modules/Events/Emitter.js'
-import ScarlatWpp from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
+import { loadClient } from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
 
 dotenv.config()
-// eslint-disable-next-line no-unused-expressions
-Hospedagem.all
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const filaDeMensagens: any = []
 
 let processandoFila = false
+
+loadClient()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 meuEmitter.on('message', async (message: any) => {
