@@ -17,6 +17,8 @@ export const loadClient = async () => {
     client = await wpp.create({
       session: 'Scarlat',
       headless: true,
+      debug: process.env.NODE_ENV === 'development',
+      deviceName: 'Scarlat',
     })
 
     client.onMessage(async (message) => {

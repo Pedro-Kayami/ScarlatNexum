@@ -1,13 +1,13 @@
-2024/03/26-11:29:08.758 40fc Reusing MANIFEST C:\Users\mathe\OneDrive\DD\GitHub\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2024/03/26-11:29:08.759 40fc Recovering log #82
-2024/03/26-11:29:08.776 40fc Reusing old log C:\Users\mathe\OneDrive\DD\GitHub\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000082.log 
-2024/03/26-11:29:19.489 2f1c Level-0 table #87: started
-2024/03/26-11:29:19.508 2f1c Level-0 table #87: 218206 bytes OK
-2024/03/26-11:29:19.512 2f1c Delete type=0 #82
-2024/03/26-11:29:19.514 2f1c Manual compaction at level-0 from '\x00!\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00"\x00\x00\x00' @ 0 : 0; will stop at (end)
-2024/03/26-11:29:21.148 2f1c Compacting 1@1 + 1@2 files
-2024/03/26-11:29:21.232 2f1c Generated table #88@1: 42427 keys, 1593241 bytes
-2024/03/26-11:29:21.232 2f1c Compacted 1@1 + 1@2 files => 1593241 bytes
-2024/03/26-11:29:21.233 2f1c compacted to: files[ 0 0 1 0 0 0 0 ]
-2024/03/26-11:29:21.233 2f1c Delete type=2 #84
-2024/03/26-11:29:21.233 2f1c Delete type=2 #87
+2024/03/26-15:41:52.540 41b0 Reusing MANIFEST C:\Users\PedroKayami\Documents\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/03/26-15:41:52.541 41b0 Recovering log #101
+2024/03/26-15:41:52.551 41b0 Reusing old log C:\Users\PedroKayami\Documents\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000101.log 
+2024/03/26-15:42:03.318 3150 Level-0 table #106: started
+2024/03/26-15:42:03.343 3150 Level-0 table #106: 86687 bytes OK
+2024/03/26-15:42:03.350 3150 Delete type=0 #101
+2024/03/26-15:42:03.351 49a0 Manual compaction at level-0 from '\x00%\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00&\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/03/26-15:42:05.806 4554 Compacting 1@1 + 1@2 files
+2024/03/26-15:42:05.922 4554 Generated table #107@1: 45717 keys, 1709354 bytes
+2024/03/26-15:42:05.922 4554 Compacted 1@1 + 1@2 files => 1709354 bytes
+2024/03/26-15:42:05.923 4554 compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/03/26-15:42:05.924 4554 Delete type=2 #103
+2024/03/26-15:42:05.924 4554 Delete type=2 #106

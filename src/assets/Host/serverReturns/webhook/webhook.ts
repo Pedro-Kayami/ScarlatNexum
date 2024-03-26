@@ -10,7 +10,6 @@ import { getClient } from '@/assets/database/dataBase.js'
 
 export function dispararHook(params: unknown) {
   const urlMod = `https://nxbr-demonstrativo-api.nexum.com.br/api/v1/webhooks/atendimento/mensagens`
-  console.log(params)
   axios
     .post(urlMod, params, {
       headers: {
@@ -27,7 +26,6 @@ const apiProtocolos =
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function dispararProtocolos() {
   const retorno = await obterDadosProtocolos()
-  console.log(retorno)
 
   axios
     .post(apiProtocolos, retorno)
