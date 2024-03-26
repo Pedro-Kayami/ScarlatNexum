@@ -1,0 +1,29 @@
+2024/03/26-08:47:56.092 3db0 Reusing MANIFEST C:\Users\PedroKayami\Documents\ScarlatRef\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/03/26-08:47:56.094 3db0 Recovering log #60
+2024/03/26-08:47:56.144 3db0 Reusing old log C:\Users\PedroKayami\Documents\ScarlatRef\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000060.log 
+2024/03/26-08:48:06.479 56ec Level-0 table #66: started
+2024/03/26-08:48:06.507 56ec Level-0 table #66: 662932 bytes OK
+2024/03/26-08:48:06.509 56ec Delete type=0 #60
+2024/03/26-08:48:06.510 35c0 Manual compaction at level-0 from '\x00\x15\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x16\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/03/26-08:48:06.516 35c0 Level-0 table #68: started
+2024/03/26-08:48:06.527 35c0 Level-0 table #68: 454 bytes OK
+2024/03/26-08:48:06.528 35c0 Delete type=0 #65
+2024/03/26-08:48:06.529 35c0 Manual compaction at level-0 from '\x00\x16\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x17\x00\x00\x00' @ 0 : 0; will stop at '\x00\x16\x00\x00\x05' @ 323920 : 0
+2024/03/26-08:48:06.529 35c0 Compacting 1@0 + 1@1 files
+2024/03/26-08:48:06.556 35c0 Generated table #69@0: 19938 keys, 386542 bytes
+2024/03/26-08:48:06.556 35c0 Compacted 1@0 + 1@1 files => 386542 bytes
+2024/03/26-08:48:06.557 35c0 compacted to: files[ 0 1 2 0 0 0 0 ]
+2024/03/26-08:48:06.557 35c0 Delete type=2 #68
+2024/03/26-08:48:06.559 35c0 Manual compaction at level-0 from '\x00\x16\x00\x00\x05' @ 323920 : 0 .. '\x00\x17\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/03/26-08:48:07.547 3db0 Compacting 1@1 + 2@2 files
+2024/03/26-08:48:07.615 3db0 Generated table #70@1: 32333 keys, 2210717 bytes
+2024/03/26-08:48:07.677 3db0 Generated table #71@1: 35205 keys, 1878433 bytes
+2024/03/26-08:48:07.677 3db0 Compacted 1@1 + 2@2 files => 4089150 bytes
+2024/03/26-08:48:07.678 3db0 compacted to: files[ 0 0 2 0 0 0 0 ]
+2024/03/26-08:48:07.679 3db0 Delete type=2 #62
+2024/03/26-08:48:07.679 3db0 Delete type=2 #63
+2024/03/26-08:48:07.679 3db0 Delete type=2 #66
+2024/03/26-08:48:07.679 3db0 Delete type=2 #69
+2024/03/26-08:48:14.096 56ec Level-0 table #73: started
+2024/03/26-08:48:14.124 56ec Level-0 table #73: 1081664 bytes OK
+2024/03/26-08:48:14.127 56ec Delete type=0 #67
