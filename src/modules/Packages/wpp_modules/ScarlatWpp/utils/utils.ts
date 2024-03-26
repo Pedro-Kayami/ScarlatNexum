@@ -26,7 +26,7 @@ export async function getType(client, message) {
       console.error(error)
     }
   } else if (type === 'ptt') {
-    const base = await client.downloadMedia(message.id)   
+    const base = await client.downloadMedia(message.id)
     const baseFormat = base.split('base64,')[1]
     return {
       fileBase: baseFormat,
