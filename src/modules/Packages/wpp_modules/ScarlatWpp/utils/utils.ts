@@ -10,9 +10,13 @@ export async function getType(client, message) {
     const base = await client.downloadMedia(message.id)
     const baseFormat = base.split('base64,')
     return {
-      fileName: message.fileName,
-      fileBase: baseFormat[1],
-      mimeType: baseFormat[0].replace('data:', '').replace(';', ''),
+      type: 'base64',
+      message: {
+        type: 'document',
+        fileName: message.fileName,
+        fileBase: baseFormat[1],
+        mimeType: baseFormat[0].replace('data:', '').replace(';', ''),
+      },
     }
     // ...
   } else if (type === 'image') {
@@ -20,7 +24,11 @@ export async function getType(client, message) {
     try {
       const resizedBase64Data = (await decreaseImageQuality(base, 60)) as string
       return {
-        fileBase: resizedBase64Data,
+        type: 'base64',
+        message: {
+          type: 'image',
+          fileBase: resizedBase64Data,
+        },
       }
     } catch (error) {
       console.error(error)
@@ -29,7 +37,11 @@ export async function getType(client, message) {
     const base = await client.downloadMedia(message.id)
     const baseFormat = base.split('base64,')[1]
     return {
-      fileBase: baseFormat,
+      type: 'base64',
+      message: {
+        type: 'ptt',
+        fileBase: baseFormat,
+      },
     }
   }
 }

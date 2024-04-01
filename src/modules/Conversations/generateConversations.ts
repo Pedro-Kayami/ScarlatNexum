@@ -55,13 +55,13 @@ async function generateId(message: Message, to: string): Promise<Message> {
       if (existingId) {
         message.conversationId = (existingId as BSON.ObjectId).toHexString()
       } else {
-        message = (await createConversationId(message)) as Message // Cast the return value of createConversationId to Message
+        message = (await createConversationId(message)) as Message
       }
       const messageusr = await addMessageUser(message, to, false)
 
-      const messageData = (messageusr as Message).message // Cast messageusr to Message and access the 'message' property
+      const messageData = (messageusr as Message).message
 
-      message.message = messageData // Assign the 'message' property from messageData to the 'message' variable
+      message.message = messageData
 
       resolve(message)
     } catch (error) {

@@ -25,15 +25,18 @@ export const loadClient = async () => {
       if (
         !message.isGroupMsg &&
         message.from !== 'status@broadcast' &&
-        message.type !== 'gp2'
+        message.type !== 'gp2' &&
+        message.type !== 'ciphertext' &&
+        message.type !== 'e2e_notification'
       ) {
+        const returnType = await getType(client, message)
         const arrumarbody = {
           identifier: message.from.replace('@c.us', ''),
           // eslint-disable-next-line no-undef
-          message: await getType(client, message),
+          message: returnType.message,
           name: message.notifyName,
           provider: 'whats_wpp',
-          type: message.type,
+          type: returnType.type,
           // eslint-disable-next-line no-undef
           photo: await getBase64Image(client, message.from),
         }
