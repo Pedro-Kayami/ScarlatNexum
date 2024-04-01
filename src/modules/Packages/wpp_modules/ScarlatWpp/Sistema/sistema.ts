@@ -25,7 +25,9 @@ export const loadClient = async () => {
       if (
         !message.isGroupMsg &&
         message.from !== 'status@broadcast' &&
-        message.type !== 'gp2'
+        message.type !== 'gp2' &&
+        message.type !== 'ciphertext' &&
+        message.type !== 'e2e_notification'
       ) {
         const arrumarbody = {
           identifier: message.from.replace('@c.us', ''),

@@ -7,8 +7,7 @@ const collections = [
   'SOLICITACAO_EMPRESTIMO',
   'users',
 ]
-const url =
-  'mongodb+srv://matheuscuan:334455@scarlatbot.85s8bhy.mongodb.net/?retryWrites=true&w=majority'
+const url = process.env.URL_MONGO
 
 const clientOptions = {
   serverApi: {
