@@ -27,7 +27,7 @@ export async function createCollectionIfNotExists(): Promise<void> {
   let client: MongoClient | undefined
 
   try {
-    client = await MongoClient.connect(url)
+    client = await MongoClient.connect(process.env.URL_MONGO)
     const db = client.db(dbName)
 
     for (const collectionName of collections) {
