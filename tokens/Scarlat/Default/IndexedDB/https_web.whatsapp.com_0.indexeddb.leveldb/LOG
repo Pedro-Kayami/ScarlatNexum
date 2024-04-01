@@ -1,15 +1,13 @@
-2024/04/01-08:43:01.042 1ca8 Reusing MANIFEST C:\Users\mathe\OneDrive\DD\GitHub\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2024/04/01-08:43:01.043 1ca8 Recovering log #130
-2024/04/01-08:43:01.090 1ca8 Reusing old log C:\Users\mathe\OneDrive\DD\GitHub\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000130.log 
-2024/04/01-08:43:01.090 1ca8 Delete type=2 #129
-2024/04/01-08:43:01.090 1ca8 Delete type=2 #131
-2024/04/01-08:43:11.409 13f8 Level-0 table #135: started
-2024/04/01-08:43:11.460 13f8 Level-0 table #135: 1011896 bytes OK
-2024/04/01-08:43:11.462 13f8 Delete type=0 #130
-2024/04/01-08:43:11.464 13f8 Manual compaction at level-0 from '\x00*\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00+\x00\x00\x00' @ 0 : 0; will stop at (end)
-2024/04/01-08:43:12.694 3b8c Compacting 1@1 + 1@2 files
-2024/04/01-08:43:12.747 3b8c Generated table #136@1: 58560 keys, 2176637 bytes
-2024/04/01-08:43:12.747 3b8c Compacted 1@1 + 1@2 files => 2176637 bytes
-2024/04/01-08:43:12.748 3b8c compacted to: files[ 0 0 1 0 0 0 0 ]
-2024/04/01-08:43:12.748 3b8c Delete type=2 #132
-2024/04/01-08:43:12.749 3b8c Delete type=2 #135
+2024/03/26-15:55:22.297 4cdc Reusing MANIFEST C:\Users\PedroKayami\Documents\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/03/26-15:55:22.298 4cdc Recovering log #105
+2024/03/26-15:55:22.304 4cdc Reusing old log C:\Users\PedroKayami\Documents\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000105.log 
+2024/03/26-15:55:32.630 4870 Level-0 table #110: started
+2024/03/26-15:55:32.640 4870 Level-0 table #110: 88303 bytes OK
+2024/03/26-15:55:32.641 4870 Delete type=0 #105
+2024/03/26-15:55:32.642 4870 Manual compaction at level-0 from '\x00&\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00'\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/03/26-15:55:33.618 3a94 Compacting 1@1 + 1@2 files
+2024/03/26-15:55:33.675 3a94 Generated table #111@1: 46653 keys, 1742418 bytes
+2024/03/26-15:55:33.675 3a94 Compacted 1@1 + 1@2 files => 1742418 bytes
+2024/03/26-15:55:33.677 3a94 compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/03/26-15:55:33.677 3a94 Delete type=2 #107
+2024/03/26-15:55:33.677 3a94 Delete type=2 #110

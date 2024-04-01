@@ -1,20 +1,13 @@
-2024/04/01-08:40:13.190 64a4 Reusing MANIFEST C:\Users\mathe\OneDrive\DD\GitHub\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2024/04/01-08:40:13.191 64a4 Recovering log #123
-2024/04/01-08:40:13.194 64a4 Reusing old log C:\Users\mathe\OneDrive\DD\GitHub\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000123.log 
-2024/04/01-08:40:23.537 50b4 Level-0 table #128: started
-2024/04/01-08:40:23.548 50b4 Level-0 table #128: 146831 bytes OK
-2024/04/01-08:40:23.552 50b4 Delete type=0 #123
-2024/04/01-08:40:23.553 64a4 Manual compaction at level-0 from '\x00)\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00*\x00\x00\x00' @ 0 : 0; will stop at (end)
-2024/04/01-08:40:24.266 d8 Compacting 1@1 + 1@2 files
-2024/04/01-08:40:24.312 d8 Generated table #129@1: 50440 keys, 1874865 bytes
-2024/04/01-08:40:24.312 d8 Compacted 1@1 + 1@2 files => 1874865 bytes
-2024/04/01-08:40:24.313 d8 compacted to: files[ 0 0 1 0 0 0 0 ]
-2024/04/01-08:40:24.313 d8 Delete type=2 #125
-2024/04/01-08:40:24.313 d8 Delete type=2 #128
-2024/04/01-08:40:26.737 d8 Level-0 table #131: started
-2024/04/01-08:40:26.758 d8 Level-0 table #131: 1122409 bytes OK
-2024/04/01-08:40:26.759 d8 Delete type=0 #127
-2024/04/01-08:40:26.766 d8 Compacting 1@1 + 1@2 files
-2024/04/01-08:40:26.808 d8 Generated table #132@1: 58493 keys, 2143953 bytes
-2024/04/01-08:40:26.808 d8 Compacted 1@1 + 1@2 files => 2143953 bytes
-2024/04/01-08:40:26.809 d8 compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/03/26-15:41:52.540 41b0 Reusing MANIFEST C:\Users\PedroKayami\Documents\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/03/26-15:41:52.541 41b0 Recovering log #101
+2024/03/26-15:41:52.551 41b0 Reusing old log C:\Users\PedroKayami\Documents\ScarlatNexum\tokens\Scarlat\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000101.log 
+2024/03/26-15:42:03.318 3150 Level-0 table #106: started
+2024/03/26-15:42:03.343 3150 Level-0 table #106: 86687 bytes OK
+2024/03/26-15:42:03.350 3150 Delete type=0 #101
+2024/03/26-15:42:03.351 49a0 Manual compaction at level-0 from '\x00%\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00&\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/03/26-15:42:05.806 4554 Compacting 1@1 + 1@2 files
+2024/03/26-15:42:05.922 4554 Generated table #107@1: 45717 keys, 1709354 bytes
+2024/03/26-15:42:05.922 4554 Compacted 1@1 + 1@2 files => 1709354 bytes
+2024/03/26-15:42:05.923 4554 compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/03/26-15:42:05.924 4554 Delete type=2 #103
+2024/03/26-15:42:05.924 4554 Delete type=2 #106
