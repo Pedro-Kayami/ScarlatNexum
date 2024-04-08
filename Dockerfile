@@ -6,7 +6,7 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-ARG NODE_VERSION=20.10.0
+ARG NODE_VERSION=20
 ARG PNPM_VERSION=8.15.5
 
 ################################################################################
@@ -54,6 +54,9 @@ RUN pnpm run build
 # where the necessary files are copied from the build stage.
 FROM base as final
 
+# We don't need the standalone Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
 # Use production node environment by default.
 ENV LINK_WEBHOOK_MENSAGENS="http://localhost:8080"
 ENV DB_MONGO='ScarlatDataBase'
@@ -65,9 +68,22 @@ ENV TOKEN_TELEGRAM='6728340092:AAEHNLaBGyxbgd-F8Vhzp58j9iYfRkaOMPs'
 ENV PORT=8080
 ENV NODE_ENV='production'
 
-RUN apk add --no-cache chromium \
-    && npm i -g pm2 \
-    && npx puppeteer browsers install chrome
+RUN  npm i -g pm2
+
+ENV CHROME_BIN="/usr/bin/chromium-browser" \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true"
+RUN set -x \
+    && apk update \
+    && apk upgrade \
+    && apk add --no-cache \
+    udev \
+    ttf-freefont \
+    chromium
+
+RUN echo "kernel.unprivileged_userns_clone = 1" >> /etc/sysctl.conf
+
+# Executa o comando sysctl para aplicar a configuração
+RUN sysctl -p
 
 RUN chown -R node:node /usr/src/app
 
