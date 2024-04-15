@@ -393,7 +393,7 @@ export async function createConversation(params: unknown) {
       await collection.insertOne(newData)
 
       resolve({
-        status: 'sucesso',
+        status: 'sucess',
         conversationId: uuid,
       })
     } catch (error) {

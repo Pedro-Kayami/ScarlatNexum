@@ -1,11 +1,11 @@
 import bodyParser from 'body-parser'
 import express from 'express'
 
-import userMensagemPost from '@/assets/api/routes/requestPost.js'
 import { authenticateToken } from '@/assets/auth/middleware/middlewareAuth.js'
 import Auth from '@/assets/auth/routes/authRoutes.js'
 import { createCollectionIfNotExists } from '@/assets/database/dataBase.js'
 
+import userMensagemPost from '../../assets/api/routes/requestPost.js' // '../assets/api/routes/requestPost.js'
 // import ScarlatMeta from '../../modules/Packages/meta_modules/WebHook/webhook'
 import userMensagemGet from '../api/routes/requestGet.js'
 

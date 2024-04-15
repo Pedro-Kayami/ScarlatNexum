@@ -1,6 +1,8 @@
+import ffmpeg from 'fluent-ffmpeg'
+import fs from 'fs'
 import sharp from 'sharp'
 
-function decreaseImageQuality(base64Data: string, quality: unknown) {
+async function decreaseImageQuality(base64Data, quality) {
   return new Promise((resolve, reject) => {
     try {
       if (!base64Data) {
@@ -17,10 +19,10 @@ function decreaseImageQuality(base64Data: string, quality: unknown) {
         .metadata()
         .then((metadata) => {
           const maxWidth = Math.round(
-            (metadata.width ?? 0) / 3 + (metadata.width ?? 0) / 3,
+            (metadata.width || 0) / 3 + (metadata.width || 0) / 3,
           )
           const maxHeight = Math.round(
-            (metadata.height ?? 0) / 3 + (metadata.height ?? 0) / 3,
+            (metadata.height || 0) / 3 + (metadata.height || 0) / 3,
           )
 
           sharp(buffer)
@@ -30,7 +32,7 @@ function decreaseImageQuality(base64Data: string, quality: unknown) {
               fit: 'inside',
             })
             .jpeg({
-              quality: quality as number,
+              quality,
             })
             .toBuffer()
             .then((resizedBuffer) => {
@@ -52,4 +54,44 @@ function decreaseImageQuality(base64Data: string, quality: unknown) {
     }
   })
 }
-export default decreaseImageQuality
+
+async function convertWebMtoMP3(base64WebM: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    try {
+      const buffer = Buffer.from(base64WebM, 'base64')
+
+      fs.writeFileSync('temp.webm', buffer)
+    } catch (err) {
+      console.error('An error occurred while writing the file:', err)
+      return reject(err)
+    }
+
+    // Configure ffmpeg to convert the .webm file to .mp3
+    ffmpeg('temp.webm')
+      .output('output.mp3')
+      .audioCodec('libmp3lame')
+      .on('end', () => {
+        try {
+          const outputBuffer = fs.readFileSync('output.mp3')
+          const base64Output = outputBuffer.toString('base64')
+          resolve(base64Output)
+        } catch (err) {
+          console.error('An error occurred while reading the file:', err)
+          reject(err)
+        }
+      })
+      .on('error', (err) => {
+        console.error('An error occurred while converting the file:', err)
+        reject(err)
+      })
+      .run()
+  })
+}
+
+function isWebM(base64Data) {
+  const data = Buffer.from(base64Data, 'base64').toString('binary')
+  const webmSignature = '\x1A\x45\xDF\xA3'
+  return data.startsWith(webmSignature)
+}
+
+export default { convertWebMtoMP3, decreaseImageQuality, isWebM }

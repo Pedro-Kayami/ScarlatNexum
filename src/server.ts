@@ -39,7 +39,7 @@ async function processarFila(): Promise<void> {
       }
 
       const data = await generateId(message, 'U')
-      await dispararHook(data)
+      await dispararHook({ message: data })
     }
   } catch (error) {
     console.error('Erro ao processar fila:', error)

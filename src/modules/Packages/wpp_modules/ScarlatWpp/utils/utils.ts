@@ -1,35 +1,57 @@
 import axios from 'axios'
 
-import decreaseImageQuality from '@/modules/Packages/utils/utilsAll.js'
+import utilsAll from '@/modules/Packages/utils/utilsAll.js'
 
 export async function getType(client, message) {
   const type = message.type
   if (type === 'chat') {
-    return message.body
+    return {
+      type: 'chat',
+      message: {
+        type: 'text',
+        text: message.body,
+      },
+    }
   } else if (type === 'document') {
     const base = await client.downloadMedia(message.id)
     const baseFormat = base.split('base64,')
     return {
-      fileName: message.fileName,
-      fileBase: baseFormat[1],
-      mimeType: baseFormat[0].replace('data:', '').replace(';', ''),
+      type: 'base64',
+      message: {
+        type: 'document',
+        fileName: message.fileName,
+        fileBase: baseFormat[1],
+        mimeType: baseFormat[0].replace('data:', '').replace(';', ''),
+      },
     }
-    // ...
   } else if (type === 'image') {
     const base = await client.downloadMedia(message.id)
     try {
-      const resizedBase64Data = (await decreaseImageQuality(base, 60)) as string
+      const resizedBase64Data: unknown = (await utilsAll.decreaseImageQuality(
+        base,
+        60,
+      )) as string
+      console.log('resizedBase64Data', resizedBase64Data)
       return {
-        fileBase: resizedBase64Data,
+        type: 'base64',
+        message: {
+          type: 'image',
+          fileBase: resizedBase64Data,
+        },
       }
     } catch (error) {
       console.error(error)
     }
   } else if (type === 'ptt') {
     const base = await client.downloadMedia(message.id)
+    console.log('erro', base)
     const baseFormat = base.split('base64,')[1]
     return {
-      fileBase: baseFormat,
+      type: 'base64',
+      message: {
+        type: 'ptt',
+        fileBase: baseFormat,
+      },
     }
   }
 }

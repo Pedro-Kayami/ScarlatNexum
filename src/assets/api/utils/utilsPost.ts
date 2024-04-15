@@ -37,7 +37,7 @@ export async function updateNotReads(req: Request, res: Response) {
 export async function createConversationId(req: Request, res: Response) {
   try {
     const retorno: unknown = await createConversation(req.body)
-    if ((retorno as { status: string }).status === 'success') {
+    if ((retorno as { status: string }).status === 'sucess') {
       res.status(200).json(retorno)
     } else {
       res.status(400).json(retorno)
@@ -53,7 +53,7 @@ export async function createConversationId(req: Request, res: Response) {
 export async function updateConversation(req: Request, res: Response) {
   try {
     const retorno: unknown = await updateStatusConversation(req.body)
-    if ((retorno as { status: string }).status === 'success') {
+    if ((retorno as { status: string }).status === 'sucess') {
       res.status(200).json(retorno)
     } else {
       res.status(400).json(retorno)

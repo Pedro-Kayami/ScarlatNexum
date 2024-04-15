@@ -58,14 +58,14 @@ FROM base as final
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 # Use production node environment by default.
-ENV LINK_WEBHOOK_MENSAGENS="http://localhost:8080"
+ENV LINK_WEBHOOK_MENSAGENS="http://localhost:8082/api/v1/webhooks/atendimento/mensagens"
 ENV DB_MONGO='ScarlatDataBase'
-ENV URL_MONGO="mongodb+srv://matheuscuan:334455@scarlatbot.85s8bhy.mongodb.net/?retryWrites=true&w=majority"
+ENV URL_MONGO="mongodb://mongodb:27017"
 ENV TOKEN_META="Bearer EAAJNmZCG2iSsBOwW5ZBCLZA4bEMyvDNL5tSLkuzK7npIQlkoh6ZALM9swYXCmsi6oMGQUWidrywR3mqqXZAMZAJ1xfiyJkyGBHjosoiye5VCZCBK95UeyMmfAHMsBagSnhNAN5EjzXgjdfrV3oedd2A1EZC2ZB8k1ZB1TcAutVn9uPapr7ER66jeBfnPylB0VYJOboK4pCMOx6GDBtMHaZCi06TNnX7ZATa7B281p0qL"
 ENV URL_META=e'https://graph.facebook.com/v17.0/138522866009140/mssages'
 ENV URL_META_MEDIA='https://graph.facebook.com/v17.0/138522866009140/media'
 ENV TOKEN_TELEGRAM='6728340092:AAEHNLaBGyxbgd-F8Vhzp58j9iYfRkaOMPs'
-ENV PORT=8080
+ENV PORT=8090
 ENV NODE_ENV='production'
 
 RUN  npm i -g pm2
@@ -78,7 +78,8 @@ RUN set -x \
     && apk add --no-cache \
     udev \
     ttf-freefont \
-    chromium
+    chromium \
+    ffmpeg
 
 RUN echo "kernel.unprivileged_userns_clone = 1" >> /etc/sysctl.conf
 
