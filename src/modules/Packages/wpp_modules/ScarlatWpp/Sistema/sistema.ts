@@ -15,10 +15,30 @@ export const loadClient = async () => {
 
   try {
     client = await wpp.create({
-      session: 'Scarlat',
+      session: process.env.BOT_NAME,
       headless: true,
       debug: process.env.NODE_ENV === 'development',
-      deviceName: 'Scarlat',
+      deviceName: process.env.WHATSAPP_DEVICE_NAME,
+      whatsappVersion: process.env.WHATSAPP_VERSION,
+      autoClose: 1000000,
+      disableWelcome: true,
+      updatesLog: true,
+      waitForLogin: false,
+      logQR: true,
+      browserArgs: ['--no-sandbox'],
+    })
+
+    client.onStateChange(async (state) => {
+      console.log('State changed: ', state)
+      if (state === 'CONNECTED') {
+        console.log('Conectado')
+      } else if (state === 'UNPAIRED') {
+        console.log('Desconectado')
+      } else if (state === 'CONFLICT') {
+        console.log('Conflito')
+      } else if (state === 'UNLAUNCHED') {
+        console.log('Não iniciado')
+      }
     })
 
     client.onMessage(async (message) => {

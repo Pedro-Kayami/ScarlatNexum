@@ -1,3 +1,4 @@
+import { message } from '@/assets/api2/enums/enumRequest.js'
 import utilsAll from '@/modules/Packages/utils/utilsAll.js'
 // import ScarlatMetaWhats from '../Packages/meta_modules/ScarlatMetaWhats/Requisicoes/API.js'
 import { loadClient } from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
@@ -12,23 +13,37 @@ async function getClient(provider: string) {
   }
 }
 
-async function sendTextClient(params: unknown) {
-  const { identifier, provider, message } = (
-    params as {
-      body: { identifier: string; provider: string; message: object }
-    }
-  ).body
+async function sendTextClient(
+  identifier: string,
+  provider: string,
+  message: message,
+  name?: string,
+) {
   const client = await getClient(provider)
   try {
     if (provider === 'whats_wpp') {
+      if (await !client.checkNumberStatus(identifier + '@c.us')) {
+        return {
+          status: 'error',
+          message: 'Number not found',
+        }
+      }
       const identifierUs = identifier + '@c.us'
-      client.sendText(identifierUs, (message as { text: string }).text)
+      let sendText = message.text
+      if (name) {
+        sendText = `*${name}*\n${sendText}`
+      }
+      if (await !client.sendText(identifierUs, sendText)) {
+        return {
+          status: 'error',
+          message: 'Error sending message',
+        }
+      }
     } else if (provider === 'whats_meta' || provider === 'telegram') {
       // client.sendMessage(identifier, message)
     } else {
       throw Error()
     }
-
     return {
       status: 'success',
     }
@@ -40,17 +55,11 @@ async function sendTextClient(params: unknown) {
   }
 }
 
-async function sendTemplateClient(params: unknown) {
-  const { provider } = (
-    params as {
-      body: {
-        identifier: string
-        provider: string
-        message: unknown
-        components: unknown
-      }
-    }
-  ).body
+async function sendTemplateClient(
+  identifier: string,
+  provider: string,
+  // message: templateMessage,
+) {
   // const client = await getClient(provider)
   try {
     if (provider === 'whats_meta') {
@@ -73,30 +82,28 @@ async function sendTemplateClient(params: unknown) {
   }
 }
 
-async function sendFileBase64Client(params: unknown) {
-  console.log(params)
+async function sendFileBase64Client(
+  identifier: string,
+  provider: string,
+  message: message,
+) {
   try {
-    let data: string = ''
-    const { identifier, provider, message } = (
-      params as {
-        body: { identifier: string; provider: string; message: unknown }
-      }
-    ).body
-    const client = await getClient(provider)
-    let base64: unknown = (message as { type: string; fileBase: string })
-      .fileBase
-    data = `data:${(message as { mimeType: string }).mimeType};base64,${base64}`
     const quality = 80
-    if ((message as { type: string; fileBase: string }).type === 'image') {
-      const { fileBase } = message as { type: string; fileBase: string }
-      base64 = await utilsAll.decreaseImageQuality(fileBase as string, quality)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      data = `data:${(message as { mimeType: string }).mimeType};base64,${base64}`
+
+    let data: string = ''
+    const client = await getClient(provider)
+    let base64, mimeType
+    if (message.type === 'document') {
+      base64 = message.fileBase
+      mimeType = message.mimeType
     }
-    if ((message as { type: string; fileBase: string }).type === 'ptt') {
-      let base64: string = (
-        message as { type: string; fileBase: string }
-      ).fileBase.toString()
+    if (message.type === 'image') {
+      base64 = await utilsAll.decreaseImageQuality(message.fileBase, quality)
+      mimeType = message.mimeType
+    }
+    if (message.type === 'ptt') {
+      base64 = message.fileBase
+      mimeType = message.mimeType
       if (utilsAll.isWebM(base64)) {
         base64 = await utilsAll.convertWebMtoMP3(base64)
         console.log('base64', base64)
@@ -104,18 +111,20 @@ async function sendFileBase64Client(params: unknown) {
       }
     }
 
+    data = `data:${mimeType};base64,${base64}`
+
     if (provider === 'telegram') {
       // ScarlatTelegram.sendFile(identifier, base64, message.fileName, message.type)
     } else if (provider === 'whats_wpp') {
       const identifierUs = identifier + '@c.us'
       client.sendFile(identifierUs, data)
     } else if (provider === 'whats_meta') {
-      client.sendFile(
-        identifier,
-        `${base64}`,
-        (message as { fileName: string }).fileName,
-        (message as { type: string }).type,
-      )
+      // client.sendFile(
+      //   identifier,
+      //   `${base64}`,
+      //   .fileName,
+      //   (message as { type: string }).type,
+      // )
     } else {
       throw Error()
     }
@@ -131,7 +140,24 @@ async function sendFileBase64Client(params: unknown) {
   }
 }
 
+async function getQrCode() {
+  const client = await getClient('whats_wpp')
+  if ((await client.getConnectionState()).toString() === 'CONNECTED') {
+    return {
+      status: 'success',
+      message: 'Connected',
+      qrCode: null,
+    }
+  } else {
+    return {
+      status: 'success',
+      qrCode: (await client.getQrCode()).base64Image,
+    }
+  }
+}
+
 export default {
+  getQrCode,
   sendTextClient,
   sendTemplateClient,
   sendFileBase64Client,

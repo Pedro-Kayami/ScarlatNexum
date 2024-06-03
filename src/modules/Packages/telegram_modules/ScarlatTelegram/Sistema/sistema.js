@@ -2,7 +2,7 @@
 // const telegraf = require('telegraf')
 // const utils = require('../utils/utils')
 
-// const token = process.env.TOKEN_TELEGRAM
+// const token = process.env.TELEGRAM_BOT_TOKEN
 
 // const bot = new telegraf.Telegraf(token)
 

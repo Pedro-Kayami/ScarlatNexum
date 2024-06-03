@@ -4,9 +4,11 @@ import '@/assets/Host/HostExpress.js'
 import * as dotenv from 'dotenv'
 
 import { dispararHook } from '@/assets/Host/serverReturns/webhook/webhook.js'
-import { generateId } from '@/modules/Conversations/generateConversations.js'
 import meuEmitter from '@/modules/Events/Emitter.js'
+import { generateId } from '@/modules/Packages/utils/generateConversation.js'
 import { loadClient } from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
+
+import { MessageResponse } from './assets/api2/enums/enumResponse.js'
 
 dotenv.config()
 
@@ -38,8 +40,10 @@ async function processarFila(): Promise<void> {
         continue
       }
 
-      const data = await generateId(message, 'U')
-      await dispararHook({ message: data })
+      
+
+      const data: MessageResponse = await generateId(message, 'U')
+      dispararHook(data)
     }
   } catch (error) {
     console.error('Erro ao processar fila:', error)

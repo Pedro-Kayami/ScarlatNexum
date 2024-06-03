@@ -1,13 +1,12 @@
 import { Db, MongoClient } from 'mongodb'
 
-const dbName = 'ScarlatDataBase'
+const dbName = process.env.DB_NAME
 const collections = [
   'PROTOCOLOS',
   'MENSAGENS',
   'SOLICITACAO_EMPRESTIMO',
   'users',
 ]
-const url = process.env.URL_MONGO
 
 const clientOptions = {
   serverApi: {
@@ -26,7 +25,7 @@ export async function createCollectionIfNotExists(): Promise<void> {
   let client: MongoClient | undefined
 
   try {
-    client = await MongoClient.connect(process.env.URL_MONGO)
+    client = await MongoClient.connect(process.env.DB_URL)
     const db = client.db(dbName)
 
     for (const collectionName of collections) {
@@ -54,7 +53,7 @@ export async function createCollectionIfNotExists(): Promise<void> {
 
 export async function getClient(): Promise<Db> {
   try {
-    const client = await MongoClient.connect(url, {
+    const client = await MongoClient.connect(process.env.DB_URL, {
       ...clientOptions,
       serverApi: '1',
     })

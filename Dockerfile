@@ -6,7 +6,7 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-ARG NODE_VERSION=20
+ARG NODE_VERSION=20.9.0
 ARG PNPM_VERSION=8.15.5
 
 ################################################################################
@@ -21,7 +21,7 @@ RUN --mount=type=cache,target=/root/.npm \
     npm install -g pnpm@${PNPM_VERSION}
 
 ################################################################################
-# Create a stage for installing production dependecies.
+# Create a stage for installing production dependencies.
 FROM base as deps
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
@@ -58,15 +58,37 @@ FROM base as final
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 # Use production node environment by default.
-ENV LINK_WEBHOOK_MENSAGENS="http://localhost:8082/api/v1/webhooks/atendimento/mensagens"
-ENV DB_MONGO='ScarlatDataBase'
-ENV URL_MONGO="mongodb://mongodb:27017"
+ENV URL_WEBHOOK_MENSAGENS="https://6045-138-186-2-162.ngrok-free.app/api/v1/webhooks/atendimento/mensagens"
+ENV DB_NAME='ScarlatDataBase'
 ENV TOKEN_META="Bearer EAAJNmZCG2iSsBOwW5ZBCLZA4bEMyvDNL5tSLkuzK7npIQlkoh6ZALM9swYXCmsi6oMGQUWidrywR3mqqXZAMZAJ1xfiyJkyGBHjosoiye5VCZCBK95UeyMmfAHMsBagSnhNAN5EjzXgjdfrV3oedd2A1EZC2ZB8k1ZB1TcAutVn9uPapr7ER66jeBfnPylB0VYJOboK4pCMOx6GDBtMHaZCi06TNnX7ZATa7B281p0qL"
-ENV URL_META=e'https://graph.facebook.com/v17.0/138522866009140/mssages'
+ENV URL_META='https://graph.facebook.com/v17.0/138522866009140/mssages'
 ENV URL_META_MEDIA='https://graph.facebook.com/v17.0/138522866009140/media'
-ENV TOKEN_TELEGRAM='6728340092:AAEHNLaBGyxbgd-F8Vhzp58j9iYfRkaOMPs'
+ENV TELEGRAM_BOT_TOKEN='6728340092:AAEHNLaBGyxbgd-F8Vhzp58j9iYfRkaOMPs'
 ENV PORT=8090
 ENV NODE_ENV='production'
+ENV BOT_SYSTEM="Scarlat"
+ENV BOT_NAME='Scarlat'
+ENV BOT_VERSION='1.0.3'
+ENV BOT_DESCRIPTION='Bot de atendimento'
+ENV BOT_AUTHOR='Scarpins'
+ENV DB_HOST='localhost'
+ENV DB_PORT='27017'
+ENV DB_URL='mongodb://mongodb:27017/'
+ENV WHATSAPP_DEVICE_NAME='Testing_Nxzap'
+ENV WHATSAPP_DEVICE_ID='1'
+ENV WHATSAPP_VERSION='2.2411.x'
+ENV FACEBOOK_PAGE_ID='138522866009140'
+ENV FACEBOOK_APP_ID='138522866009140'
+ENV FACEBOOK_APP_SECRET='138522866009140'
+ENV INSTAGRAM_PAGE_ID='138522866009140'
+ENV INSTAGRAM_APP_ID='138522866009140'
+ENV INSTAGRAM_APP_SECRET='138522866009140'
+ENV TWITTER_PAGE_ID='138522866009140'
+ENV TWITTER_APP_ID='138522866009140'
+ENV TWITTER_APP_SECRET='138522866009140'
+ENV META_PAGE_ID='138522866009140'
+ENV META_APP_ID='138522866009140'
+ENV META_APP_SECRET='138522866009140'
 
 RUN  npm i -g pm2
 
@@ -99,7 +121,6 @@ COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/process.yml ./process.yml
-
 
 # Expose the port that the application listens on.
 EXPOSE ${PORT}
