@@ -8,6 +8,7 @@ import { PostUpdateConversation } from '@/assets/api2/usecase/postUpdateConversa
 import { PutUpdateOperator } from '@/assets/api2/usecase/putUpdateOperator.js'
 import bodyParser = require('body-parser')
 import express = require('express')
+import { GetPages } from '../usecase/getPages'
 
 const router = express.Router()
 
@@ -20,6 +21,7 @@ router.use(
 router.get('/getMessages', GetMessagesUseCase)
 router.get('/getConversations', GetConversationUseCase)
 router.get('/getQrCode', GetQrCodeUseCase)
+router.get('/getPages', GetPages)
 router.patch('/readMessage', PatchReadMessageUseCase)
 router.post('/sendMessage', PostSendMessageUseCase)
 router.post('/createConversation', PostCreateConversationUseCase)

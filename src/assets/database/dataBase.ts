@@ -1,12 +1,7 @@
 import { Db, MongoClient } from 'mongodb'
 
 const dbName = process.env.DB_NAME
-const collections = [
-  'PROTOCOLOS',
-  'MENSAGENS',
-  'SOLICITACAO_EMPRESTIMO',
-  'users',
-]
+const collections = ['PROTOCOLOS', 'MENSAGENS', 'STAGES', 'users']
 
 const clientOptions = {
   serverApi: {

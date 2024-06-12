@@ -40,8 +40,6 @@ async function processarFila(): Promise<void> {
         continue
       }
 
-      
-
       const data: MessageResponse = await generateId(message, 'U')
       dispararHook(data)
     }

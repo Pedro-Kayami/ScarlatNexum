@@ -50,7 +50,7 @@ export async function getQrCode() {
   return await client.getQrCode()
 }
 
-export async function getConversations(
+export async function getPages(
   operatorId: number | string | null,
   status: unknown,
 ) {
@@ -73,16 +73,54 @@ export async function getConversations(
   } else if (operatorId === 'emptyOperator') {
     search.operatorId = null
   }
-  // if (operatorId) {
-  //   search.operatorId = { $in: [operatorId, null] }
-  // }
+  if (status) {
+    search.status = status
+  }
+  const totalCount = await collectionProtocolos.countDocuments(search)
+
+  return totalCount
+}
+
+export async function getConversations(
+  operatorId: number | string | null,
+  status: unknown,
+  page?: number,
+  pageSize?: number,
+) {
+  const db = await getClient()
+  const collectionProtocolos = db.collection('PROTOCOLOS')
+  console.log(operatorId)
+  console.log(status)
+  interface SearchType {
+    operatorId?: number | null
+    status?: unknown
+  }
+  const search: SearchType = {}
+  if (
+    operatorId !== null &&
+    operatorId !== undefined &&
+    operatorId !== 'emptyOperator' &&
+    operatorId !== 'all'
+  ) {
+    search.operatorId = parseInt(operatorId.toString())
+  } else if (operatorId === 'emptyOperator') {
+    search.operatorId = null
+  }
   if (status) {
     search.status = status
   }
   console.log('search', search)
-  const dataProtocolos = await collectionProtocolos.find(search).toArray()
-  console.log('dataProtocolos', dataProtocolos)
 
+  let query = collectionProtocolos.find(search)
+
+  // Apply pagination only if page and pageSize are defined
+  if (page !== undefined && pageSize !== undefined) {
+    const skips = pageSize * (page - 1)
+    query = query.skip(skips).limit(pageSize)
+  }
+
+  const dataProtocolos = await query.toArray()
+  console.log('dataProtocolos', dataProtocolos)
   const resultados: unknown[] = []
 
   await Promise.all(
@@ -148,7 +186,6 @@ export async function getConversations(
       }
     }),
   )
-
   return resultados
 }
 

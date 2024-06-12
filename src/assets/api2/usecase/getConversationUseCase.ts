@@ -10,8 +10,10 @@ export async function GetConversationUseCase(
   try {
     const operatorId = String(req.query.operatorId)
     const status = String(req.query.status)
+    const page = Number(req.query.page)
+    const pageSize = Number(req.query.pageSize)
 
-    const data = await getConversations(operatorId, status)
+    const data = await getConversations(operatorId, status, page, pageSize)
     if (!data || data.length === 0) {
       res
         .status(404)
