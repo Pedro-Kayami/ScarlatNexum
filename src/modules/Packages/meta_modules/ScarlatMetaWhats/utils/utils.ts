@@ -1,41 +1,61 @@
 import axios from 'axios'
 import fs from 'fs'
+import { url } from 'inspector'
 import path from 'path'
 
-import decreaseImageQuality from '@/modules/Packages/utils/utilsAll.js'
+import utilsAll from '@/modules/Packages/utils/utilsAll.js'
 
 const token = process.env.TOKEN_META
 
-export async function getType(entry: Text) {
-  let type = (entry as unknown as { type: string }).type
-  if (type === 'text') {
-    type = 'chat'
-    return (entry as unknown as { text: string }).text
-  } else if (type === 'audio') {
-    // eslint-disable-next-line no-unused-expressions
-    type = 'ptt'
+export async function getType(message) {
+  if (message.type === 'text') {
     return {
-      fileBase: await getArchive(
-        (entry as unknown as { audio: { id: string } }).audio.id,
-      ),
+      type: 'chat',
+      message: {
+        type: 'text',
+        text: message.text.body,
+      },
     }
-  } else if (type === 'image' && 'image' in entry) {
-    // eslint-disable-next-line no-unused-expressions
-    type === 'image'
-    const archive = await getArchive(
-      (entry as { image: { id: string } }).image.id,
-    )
+  } else if (message.type === 'audio') {
+    const base = await getArchive(message.audio.id)
+    const baseFormat = base.split('base64,')[1]
     return {
-      fileBase: await decreaseImageQuality(archive, 60),
+      type: 'base64',
+      message: {
+        type: 'ptt',
+        fileBase: baseFormat,
+      },
     }
-  } else if (type === 'document' && 'document' in entry) {
-    // eslint-disable-next-line no-unused-expressions
-    type === 'document'
+  } else if (message.type === 'image') {
+    const base = await getArchive(message.image.id)
+    try {
+      const resizedBase64Data: string = (await utilsAll.decreaseImageQuality(
+        base,
+        60,
+      )) as string
+      const baseFormat = resizedBase64Data.split('base64,')[1]
+
+      return {
+        type: 'base64',
+        message: {
+          type: 'image',
+          fileBase: baseFormat,
+        },
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  } else if (message.type === 'document') {
+    const base = await getArchive(message.document.id)
+    const baseFormat = base.split('base64,')[1]
     return {
-      fileBase: await getArchive(
-        (entry as { document: { id: string } }).document.id,
-      ),
-      fileName: (entry as { document: { filename: string } }).document.filename,
+      type: 'base64',
+      message: {
+        type: 'document',
+        fileName: message.fileName,
+        fileBase: baseFormat[1],
+        mimeType: baseFormat[0].replace('data:', '').replace(';', ''),
+      },
     }
   }
 }
@@ -43,18 +63,13 @@ export async function getType(entry: Text) {
 export async function getIdMedia(base64, fileName, type) {
   try {
     let buffer
-    // eslint-disable-next-line n/no-path-concat
-    const url = process.env.URL_META_MEDIA
-    // ...
-
     if (type === 'image') {
       buffer = Buffer.from(
-        (await decreaseImageQuality(base64, 60)) as string,
+        (await utilsAll.decreaseImageQuality(base64, 60)) as string,
         'base64',
       )
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      buffer = Buffer.from(base64 as string, 'base64')
+      buffer = Buffer.from(base64, 'base64')
     }
     const tempFilePath = path.join(__dirname, fileName)
     fs.writeFileSync(tempFilePath, buffer)
@@ -69,19 +84,17 @@ export async function getIdMedia(base64, fileName, type) {
     })
     const fileBlob = new Blob([fileBuffer])
     formData.append('file', fileBlob, fileName)
-    const response = await axios.post(url, formData, {
+    const response = await axios.post(url + '/media', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: token,
       },
     })
-    // ...
     return response.data.id
   } catch (error) {
     console.error('Erro ao enviar imagem para o Facebook:', error)
   } finally {
-    // eslint-disable-next-line n/no-path-concat
-    const tempFilePath = `${__dirname}/${fileName}`
+    const tempFilePath = path.join(__dirname, fileName)
     await fs.unlinkSync(tempFilePath)
   }
 }
@@ -94,7 +107,7 @@ async function getArchive(media) {
 
   try {
     const response = await axios({
-      url: 'https://graph.facebook.com/v17.0/' + media,
+      url: url + '/' + media,
       method: 'GET',
       headers,
     })
@@ -127,3 +140,10 @@ async function getBase64(link) {
     return null
   }
 }
+
+const client = {
+  getIdMedia,
+  getType,
+}
+
+export default client

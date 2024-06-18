@@ -152,7 +152,7 @@
 //       storagesADO.storage[from].processo = variaveis[1].text
 //       console.log(`\nNome Template: ${template}\n`)
 //       console.log(
-//         `Nome do Cooperado: ${variaveis[0].text} | Aberto Processo: ${variaveis[1].text} | De numero: ${from} Com SUCESSO\n`,
+//         `Nome do Cooperado: ${variaveis[0].text} | Aberto Processo: ${variaveis[1].text} | De numero: ${from} Com successO\n`,
 //       )
 //       console.log(
 //         `-------------------------------------------------------------------`,

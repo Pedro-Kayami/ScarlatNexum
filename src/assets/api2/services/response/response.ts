@@ -4,10 +4,12 @@
 import { BSON, Collection, ObjectId } from 'mongodb'
 
 import { conversation, message } from '@/assets/api2/enums/enumRequest.js'
+import {
+  MessageResponse,
+  statusResponse,
+} from '@/assets/api2/enums/enumResponse.js'
 import { getClient } from '@/assets/database/dataBase.js'
 import Client from '@/modules/Client/client.js'
-
-import { MessageResponse, statusResponse } from '../../enums/enumResponse.js'
 
 export async function addMessageUser(
   conversationId: string,
@@ -151,6 +153,30 @@ export async function updateReading(idMessage: string): Promise<unknown> {
   }
 }
 
+export async function getConversation(
+  conversationId: string,
+): Promise<ObjectId> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await getClient()
+      const collection = db.collection('PROTOCOLOS')
+
+      const result = await collection.findOne({
+        _id: new BSON.ObjectId(conversationId),
+      })
+
+      if (result) {
+        resolve(result._id)
+      } else {
+        resolve(null)
+      }
+    } catch (error) {
+      console.error('Get Existing ConversationId: ', error)
+      reject(error)
+    }
+  })
+}
+
 export async function getUUID(
   identifier: string,
   provider: string,
@@ -215,7 +241,7 @@ export async function createConversation(
       await collection.insertOne(data)
 
       resolve({
-        status: 'sucess',
+        status: 'success',
         conversationId: uuid.toHexString(),
       })
     } catch (error) {
@@ -249,7 +275,7 @@ export async function updateOperatorId(
         )
       }
       resolve({
-        status: 'sucess',
+        status: 'success',
         conversationId,
       })
     } catch (error) {
@@ -322,7 +348,7 @@ export async function sendAPI(
 ) {
   let retorno = null
 
-  if (isConversation) {
+  if (isConversation && process.env.NXZAP_LITE === 'false') {
     const existing = await getExisting(conversationId)
     if (!existing) {
       return {
@@ -335,16 +361,16 @@ export async function sendAPI(
     if (type === 'chat') {
       retorno = await Client.sendTextClient(identifier, provider, message, name)
     } else if (type === 'template') {
-      // retorno = await Client.sendTemplateClient(
-      //   identifier,
-      //   provider,
-      //   message.template,
-      // )
+      retorno = await Client.sendTemplateClient(identifier, provider, message)
     } else if (type === 'base64') {
       retorno = await Client.sendFileBase64Client(identifier, provider, message)
     }
 
-    if (retorno.status === 'success' && isConversation) {
+    if (
+      retorno.status === 'success' &&
+      isConversation &&
+      process.env.NXZAP_LITE === 'false'
+    ) {
       retorno = await addMessageUser(
         conversationId,
         type,
@@ -353,7 +379,6 @@ export async function sendAPI(
         'B',
         isConversation,
       )
-      console.log(retorno)
     }
     return retorno
   } catch (error) {

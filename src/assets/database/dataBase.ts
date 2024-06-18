@@ -34,7 +34,7 @@ export async function createCollectionIfNotExists(): Promise<void> {
         console.log(`A coleção ${collectionName} já existe.`)
       } else {
         await db.createCollection(collectionName)
-        console.log(`A coleção ${collectionName} foi criada com sucesso.`)
+        console.log(`A coleção ${collectionName} foi criada com successo.`)
       }
     }
   } catch (error) {

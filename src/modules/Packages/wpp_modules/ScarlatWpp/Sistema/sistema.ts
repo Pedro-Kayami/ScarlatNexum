@@ -8,9 +8,9 @@ import {
   getType,
 } from '@/modules/Packages/wpp_modules/ScarlatWpp/utils/utils.js'
 let client: wpp.Whatsapp
-export const loadClient = async () => {
-  if (client) {
-    return client
+const getConnection = async () => {
+  if (client || process.env.NXZAP_WPP === 'false') {
+    return
   }
 
   try {
@@ -52,12 +52,10 @@ export const loadClient = async () => {
         const returnType = await getType(client, message)
         const arrumarbody = {
           identifier: message.from.replace('@c.us', ''),
-          // eslint-disable-next-line no-undef
           message: returnType.message,
           name: message.notifyName,
           provider: 'whats_wpp',
           type: returnType.type,
-          // eslint-disable-next-line no-undef
           photo: await getBase64Image(client, message.from),
         }
         meuEmitter.emit('message', arrumarbody)
@@ -69,3 +67,16 @@ export const loadClient = async () => {
     console.error(error)
   }
 }
+
+const getClient = () => {
+  if (!client) {
+    throw new Error('Client not connected')
+  }
+  return client
+}
+
+const ScarlatWpp = {
+  getConnection,
+  getClient,
+}
+export default ScarlatWpp

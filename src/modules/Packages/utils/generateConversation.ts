@@ -7,6 +7,23 @@ import {
   getUUID,
 } from '@/assets/api2/services/response/response.js'
 
+export async function getStage(message: MessageRequest): Promise<string> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const existingId = await getUUID(message.identifier, message.provider)
+
+      if (existingId) {
+        resolve('conversation')
+      } else {
+        resolve('newConversation')
+      }
+    } catch (error) {
+      console.error('Error in getStage function:', error)
+      reject(error)
+    }
+  })
+}
+
 export async function generateId(
   message: MessageRequest,
   to: string,
@@ -43,7 +60,6 @@ export async function generateId(
       // @ts-expect-error
       data.data.event = message.event
 
-      console.log(data)
       resolve(data)
     } catch (error) {
       console.error('Error in generateId function:', error)

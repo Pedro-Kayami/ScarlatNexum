@@ -1,5 +1,5 @@
 import ffmpeg from 'fluent-ffmpeg'
-import fs from 'fs'
+import * as fs from 'fs'
 import sharp from 'sharp'
 
 async function decreaseImageQuality(base64Data, quality) {

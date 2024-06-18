@@ -1,16 +1,27 @@
 import { message } from '@/assets/api2/enums/enumRequest.js'
+import ScarlatMetaWhats from '@/modules/Packages/meta_modules/ScarlatMetaWhats/Requisicoes/API.js'
 import utilsAll from '@/modules/Packages/utils/utilsAll.js'
-// import ScarlatMetaWhats from '../Packages/meta_modules/ScarlatMetaWhats/Requisicoes/API.js'
-import { loadClient } from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
+import ScarlatWpp from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
 
-async function getClient(provider: string) {
+export interface ClientType {
+  sendText?
+  sendTemplate?
+  sendFileBase64?
+  sendMessage?
+  sendFile?
+  getConnectionState?
+  getQrCode?
+}
+
+async function getClient(provider: string): Promise<ClientType> {
   if (provider === 'whats_wpp') {
-    return await loadClient()
+    return await ScarlatWpp.getClient()
   } else if (provider === 'whats_meta') {
-    // return   .client
+    return await ScarlatMetaWhats.getClient()
   } else if (provider === 'telegram') {
     // return ScarlatTelegrama.bot.telegram;
   }
+  throw new Error('Invalid provider')
 }
 
 async function sendTextClient(
@@ -22,25 +33,14 @@ async function sendTextClient(
   const client = await getClient(provider)
   try {
     if (provider === 'whats_wpp') {
-      if (await !client.checkNumberStatus(identifier + '@c.us')) {
-        return {
-          status: 'error',
-          message: 'Number not found',
-        }
-      }
       const identifierUs = identifier + '@c.us'
       let sendText = message.text
       if (name) {
         sendText = `*${name}*\n${sendText}`
       }
-      if (await !client.sendText(identifierUs, sendText)) {
-        return {
-          status: 'error',
-          message: 'Error sending message',
-        }
-      }
+      client.sendText(identifierUs, sendText)
     } else if (provider === 'whats_meta' || provider === 'telegram') {
-      // client.sendMessage(identifier, message)
+      client.sendMessage(identifier, message)
     } else {
       throw Error()
     }
@@ -58,13 +58,16 @@ async function sendTextClient(
 async function sendTemplateClient(
   identifier: string,
   provider: string,
-  // message: templateMessage,
+  message: message,
 ) {
-  // const client = await getClient(provider)
+  const client = await getClient(provider)
   try {
     if (provider === 'whats_meta') {
-      // client.sendTemplate(identifier, message, components)
-
+      client.sendTemplate(
+        identifier,
+        message.template.name,
+        message.template.components,
+      )
       return {
         status: 'success',
       }
@@ -119,12 +122,7 @@ async function sendFileBase64Client(
       const identifierUs = identifier + '@c.us'
       client.sendFile(identifierUs, data)
     } else if (provider === 'whats_meta') {
-      // client.sendFile(
-      //   identifier,
-      //   `${base64}`,
-      //   .fileName,
-      //   (message as { type: string }).type,
-      // )
+      client.sendFile(identifier, base64, message.fileName, message.type)
     } else {
       throw Error()
     }

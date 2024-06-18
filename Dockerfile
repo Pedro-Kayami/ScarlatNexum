@@ -58,11 +58,13 @@ FROM base as final
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 # Use production node environment by default.
-ENV URL_WEBHOOK_MENSAGENS="https://5fbc-2804-1b3-a4c0-cadb-1c17-a803-c8c0-62c5.ngrok-free.app/api/v1/webhooks/atendimento/mensagens"
+ENV NXZAP_LITE=false
+ENV NXZAP_WPP=true
+ENV URL_WEBHOOK_MENSAGENS="https://528f-138-186-2-162.ngrok-free.app/api/v1/webhooks/atendimento/mensagens"
 ENV DB_NAME='ScarlatDataBase'
-ENV TOKEN_META="Bearer EAAJNmZCG2iSsBOwW5ZBCLZA4bEMyvDNL5tSLkuzK7npIQlkoh6ZALM9swYXCmsi6oMGQUWidrywR3mqqXZAMZAJ1xfiyJkyGBHjosoiye5VCZCBK95UeyMmfAHMsBagSnhNAN5EjzXgjdfrV3oedd2A1EZC2ZB8k1ZB1TcAutVn9uPapr7ER66jeBfnPylB0VYJOboK4pCMOx6GDBtMHaZCi06TNnX7ZATa7B281p0qL"
-ENV URL_META='https://graph.facebook.com/v17.0/138522866009140/mssages'
-ENV URL_META_MEDIA='https://graph.facebook.com/v17.0/138522866009140/media'
+ENV TOKEN_META="Bearer EAAROsWH6BHEBO0rgwFWZA4wz2Ul8w4jw9sZAbFzaEYJJyLb82jtOU2rOZBNvIbZAOpXw6HjTjG7zqHbPnIRDFJaZArhZAPfGMmcB8cEUV8CVgjdvgTZCW3SNOxwm5jIx57JNJZB7rXS0nk4oNhLZB2uZCgaqgUJgfLBSejbMtFNxTB549EcGAegLWdmwEut4JpUU7aKvF3NLZAaWbP1KOqN1uUN3wplDtxpRiqufoIZD"
+ENV CODE_META=282208214985698
+ENV URL_META=https://graph.facebook.com/v19.0/
 ENV TELEGRAM_BOT_TOKEN='6728340092:AAEHNLaBGyxbgd-F8Vhzp58j9iYfRkaOMPs'
 ENV PORT=8090
 ENV NODE_ENV='production'

@@ -20,7 +20,7 @@ export async function GetConversationUseCase(
         .json({ error: 'No conversations found', status: 'error', data: [] })
       return
     }
-    res.status(200).json({ data, status: 'sucess' })
+    res.status(200).json({ data, status: 'success' })
   } catch (error) {
     console.error('Ocorreu um erro no getConversations: ', error)
     res.status(500).json({

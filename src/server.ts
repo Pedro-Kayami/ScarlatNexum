@@ -6,7 +6,7 @@ import * as dotenv from 'dotenv'
 import { dispararHook } from '@/assets/Host/serverReturns/webhook/webhook.js'
 import meuEmitter from '@/modules/Events/Emitter.js'
 import { generateId } from '@/modules/Packages/utils/generateConversation.js'
-import { loadClient } from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
+import ScarlatWpp from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
 
 import { MessageResponse } from './assets/api2/enums/enumResponse.js'
 
@@ -17,7 +17,7 @@ const filaDeMensagens: any = []
 
 let processandoFila = false
 
-loadClient()
+ScarlatWpp.getConnection()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 meuEmitter.on('message', async (message: any) => {
@@ -39,8 +39,11 @@ async function processarFila(): Promise<void> {
         console.error('Mensagem inválida na fila')
         continue
       }
+      let data: MessageResponse = message
+      if (process.env.NXZAP_LITE === 'false') {
+        data = await generateId(message, 'U')
+      }
 
-      const data: MessageResponse = await generateId(message, 'U')
       dispararHook(data)
     }
   } catch (error) {

@@ -15,13 +15,26 @@ export interface patchReadMessageRequest {
   operatorId: string
 }
 
+export interface parameters {
+  name_parameter: string
+  type: string
+}
+
+export interface components {
+  parameters?: [parameters]
+}
+
+export interface templateMessage {
+  name?: string
+  components: [components]
+}
+
 export interface message {
   type: string
   fileBase?: string
   mimeType?: string
   fileName?: string
-  name?: string
-  variables?: { [key: string]: string }
+  template?: templateMessage
   text?: string
 }
 
@@ -47,7 +60,7 @@ export interface createConversationRequest {
 
 export interface conversation {
   _id: BSON.ObjectId
-  firstContact: string
+  firstContact?: string
   operatorId?: string
   provider: string
   status: string
@@ -56,6 +69,7 @@ export interface conversation {
   dateCreated: string
   messages?: message
   photo?: string
+  stage?: number
 }
 
 export interface updateConversationRequest {

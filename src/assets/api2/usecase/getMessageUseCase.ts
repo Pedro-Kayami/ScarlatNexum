@@ -18,7 +18,7 @@ export async function GetMessagesUseCase(
 
   try {
     const data = await getMessagesId(conversationId)
-    res.status(200).json({ data, status: 'sucess' })
+    res.status(200).json({ data, status: 'success' })
   } catch (error) {
     console.error('Ocorreu um erro no getMessages: ', error)
     res.status(500).json({
