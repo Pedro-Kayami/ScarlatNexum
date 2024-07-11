@@ -8,7 +8,7 @@ export function dispararHook(params) {
 
   const webhookUrl = process.env.URL_WEBHOOK_MENSAGENS || ''
   axios
-    .post(webhookUrl, paramsmessage.data, {
+    .post(webhookUrl, paramsmessage, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -20,7 +20,7 @@ export function dispararHook(params) {
     .catch((error) => {
       console.log(
         'Error occurred while sending the request: ',
-        error.response ? error.response.data : error.message,
+        error.response.data,
       )
     })
 }

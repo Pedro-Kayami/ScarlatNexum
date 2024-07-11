@@ -3,7 +3,8 @@
 /* eslint-disable no-async-promise-executor */
 import { BSON, Collection, ObjectId } from 'mongodb'
 
-import { conversation, message } from '@/assets/api2/enums/enumRequest.js'
+import { message } from '@/assets/api2/enums/enumMessage'
+import { conversation } from '@/assets/api2/enums/enumRequest'
 import {
   MessageResponse,
   statusResponse,
@@ -153,30 +154,6 @@ export async function updateReading(idMessage: string): Promise<unknown> {
   }
 }
 
-export async function getConversation(
-  conversationId: string,
-): Promise<ObjectId> {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const db = await getClient()
-      const collection = db.collection('PROTOCOLOS')
-
-      const result = await collection.findOne({
-        _id: new BSON.ObjectId(conversationId),
-      })
-
-      if (result) {
-        resolve(result._id)
-      } else {
-        resolve(null)
-      }
-    } catch (error) {
-      console.error('Get Existing ConversationId: ', error)
-      reject(error)
-    }
-  })
-}
-
 export async function getUUID(
   identifier: string,
   provider: string,
@@ -209,6 +186,7 @@ export async function createConversation(
   provider: string,
   name: string,
   operatorId: string,
+  deptoId: string,
   photo?: string,
 ): Promise<statusResponse> {
   return new Promise(async (resolve, reject) => {
@@ -236,6 +214,7 @@ export async function createConversation(
         provider,
         dateCreated: dateMessage.toISOString(),
         photo: photo || '',
+        deptoId: deptoId || null,
       }
 
       await collection.insertOne(data)
@@ -256,24 +235,23 @@ export async function createConversation(
 export async function updateOperatorId(
   conversationId: string,
   operatorId: number,
+  deptoId: number,
 ): Promise<unknown> {
   return new Promise(async (resolve, reject) => {
     try {
       const db = await getClient()
       const collection: Collection = db.collection('PROTOCOLOS')
-
-      if (operatorId) {
-        await collection.updateMany(
-          {
-            _id: new BSON.ObjectId(conversationId),
+      await collection.updateMany(
+        {
+          _id: new BSON.ObjectId(conversationId),
+        },
+        {
+          $set: {
+            operatorId,
+            deptoId,
           },
-          {
-            $set: {
-              operatorId,
-            },
-          },
-        )
-      }
+        },
+      )
       resolve({
         status: 'success',
         conversationId,
@@ -364,6 +342,8 @@ export async function sendAPI(
       retorno = await Client.sendTemplateClient(identifier, provider, message)
     } else if (type === 'base64') {
       retorno = await Client.sendFileBase64Client(identifier, provider, message)
+    } else if (type === 'list') {
+      retorno = await Client.sendListClient(identifier, provider, message)
     }
 
     if (

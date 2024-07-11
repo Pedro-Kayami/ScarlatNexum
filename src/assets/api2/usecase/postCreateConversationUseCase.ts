@@ -12,6 +12,7 @@ export async function PostCreateConversationUseCase(
       provider,
       name,
       operatorId,
+      deptoId,
     }: createConversationRequest = req.body
     if (!identifier || !provider) {
       res.status(400).json({
@@ -38,6 +39,7 @@ export async function PostCreateConversationUseCase(
       provider,
       name,
       operatorId,
+      deptoId,
     )
 
     res.status(200).send(response)

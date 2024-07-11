@@ -19,7 +19,12 @@ export async function PostSendMessageUseCase(req: Request, res: Response) {
     throw new Error('Missing required request body parameters.')
   }
 
-  if (type !== 'chat' && type !== 'base64' && type !== 'template') {
+  if (
+    type !== 'chat' &&
+    type !== 'base64' &&
+    type !== 'template' &&
+    type !== 'list'
+  ) {
     res.status(400).json({
       status: 'error',
       error: 'Invalid type',

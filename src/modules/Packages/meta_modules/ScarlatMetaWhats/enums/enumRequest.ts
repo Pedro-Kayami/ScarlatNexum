@@ -30,8 +30,42 @@ export interface template {
   components?: [components]
 }
 
+export interface row {
+  id?: string
+  rowId?: string
+  title?: string
+  description?: string
+}
+
+export interface sections {
+  title?: string
+  rows?: [row]
+}
+
+export interface action {
+  button?: string
+  sections?: [sections]
+}
+
+export interface body {
+  text: string
+}
+export interface footer {
+  text: string
+}
+
+export interface interactive {
+  type: string
+  header?: string
+  body?: body
+  footer?: footer
+  buttons?: []
+  action?: action
+}
+
 export interface sendApiRequest {
   messaging_product?: string
+  interactive?: interactive
   recipient_type?: string
   to: string
   type?: string

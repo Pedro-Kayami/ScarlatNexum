@@ -1,4 +1,7 @@
 import { BSON } from 'mongodb'
+
+import { message } from '@/assets/api2/enums/enumMessage'
+
 export interface getMessagesRequest {
   conversationId: string
 }
@@ -13,29 +16,6 @@ export interface getQrCodeRequest {}
 export interface patchReadMessageRequest {
   conversationId: string
   operatorId: string
-}
-
-export interface parameters {
-  name_parameter: string
-  type: string
-}
-
-export interface components {
-  parameters?: [parameters]
-}
-
-export interface templateMessage {
-  name?: string
-  components: [components]
-}
-
-export interface message {
-  type: string
-  fileBase?: string
-  mimeType?: string
-  fileName?: string
-  template?: templateMessage
-  text?: string
 }
 
 export interface MessageRequest {
@@ -56,10 +36,16 @@ export interface createConversationRequest {
   provider: string
   identifier: string
   name?: string
+  deptoId?: string
+}
+
+export interface controllerBotRequest {
+  conversationId: string
+  botId: string
 }
 
 export interface conversation {
-  _id: BSON.ObjectId
+  _id?: BSON.ObjectId
   firstContact?: string
   operatorId?: string
   provider: string
@@ -68,8 +54,11 @@ export interface conversation {
   name?: string
   dateCreated: string
   messages?: message
+  conversationId?: string
   photo?: string
   stage?: number
+  botId?: string
+  deptoId?: string
 }
 
 export interface updateConversationRequest {
@@ -81,5 +70,6 @@ export interface updateConversationRequest {
 
 export interface updateOperatorRequest {
   conversationId: string
-  operatorId: number
+  operatorId?: number | null
+  deptoId?: number | null
 }

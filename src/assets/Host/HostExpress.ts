@@ -14,6 +14,7 @@ app.use(
   bodyParser.urlencoded({
     extended: true,
   }),
+  bodyParser.json({ limit: '100mb' }),
 )
 
 app.get('/status', (req, res) => {
@@ -21,6 +22,7 @@ app.get('/status', (req, res) => {
     status: 'OK',
   })
 })
+
 app.use('/', ScarlatMeta)
 app.use('/', Auth)
 app.use('/', authenticateToken)

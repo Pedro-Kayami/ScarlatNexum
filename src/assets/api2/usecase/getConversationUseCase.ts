@@ -8,12 +8,34 @@ export async function GetConversationUseCase(
   next: NextFunction,
 ) {
   try {
-    const operatorId = String(req.query.operatorId)
-    const status = String(req.query.status)
-    const page = Number(req.query.page)
-    const pageSize = Number(req.query.pageSize)
+    let deptoId
+    let operatorId
+    let status
+    let page
+    let pageSize
+    if (req.query.page) {
+      page = Number(req.query.page)
+    }
+    if (req.query.pageSize) {
+      pageSize = Number(req.query.pageSize)
+    }
+    if (req.query.status) {
+      status = String(req.query.status)
+    }
+    if (req.query.operatorId) {
+      operatorId = String(req.query.operatorId)
+    }
+    if (req.query.deptoId) {
+      deptoId = String(req.query.deptoId)
+    }
 
-    const data = await getConversations(operatorId, status, page, pageSize)
+    const data = await getConversations(
+      operatorId,
+      status,
+      deptoId,
+      page,
+      pageSize,
+    )
     if (!data || data.length === 0) {
       res
         .status(404)

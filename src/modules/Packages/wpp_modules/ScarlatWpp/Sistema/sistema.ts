@@ -19,13 +19,32 @@ const getConnection = async () => {
       headless: true,
       debug: process.env.NODE_ENV === 'development',
       deviceName: process.env.WHATSAPP_DEVICE_NAME,
-      whatsappVersion: process.env.WHATSAPP_VERSION,
       autoClose: 1000000,
       disableWelcome: true,
       updatesLog: true,
       waitForLogin: false,
       logQR: true,
-      browserArgs: ['--no-sandbox'],
+      browserArgs: [
+        '--no-sandbox',
+        '--aggressive-cache-discard',
+        '--disable-cache',
+        '--disable-application-cache',
+        '--disable-offline-load-stale-cache',
+        '--disk-cache-size=0',
+        '--disable-background-networking',
+        '--disable-default-apps',
+        '--disable-extensions',
+        '--disable-sync',
+        '--disable-translate',
+        '--hide-scrollbars',
+        '--metrics-recording-only',
+        '--mute-audio',
+        '--no-first-run',
+        '--safebrowsing-disable-auto-update',
+        '--ignore-certificate-errors',
+        '--ignore-ssl-errors',
+        '--ignore-certificate-errors-spki-list',
+      ],
     })
 
     client.onStateChange(async (state) => {
@@ -42,6 +61,7 @@ const getConnection = async () => {
     })
 
     client.onMessage(async (message) => {
+      console.log(message)
       if (
         !message.isGroupMsg &&
         message.from !== 'status@broadcast' &&

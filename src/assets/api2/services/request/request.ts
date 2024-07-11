@@ -22,6 +22,7 @@ export async function getMessagesId(conversationId: string) {
           operatorId: string
           status: string
           dateCreated: string
+          deptoId: string
         }
 
         const data = dataConversation as IDataConversation
@@ -35,6 +36,7 @@ export async function getMessagesId(conversationId: string) {
           status: data?.status,
           dateCreated: data?.dateCreated,
           messages: dadosMensagens,
+          deptoId: data?.deptoId,
         }
 
         return returnObject
@@ -51,16 +53,16 @@ export async function getQrCode() {
 }
 
 export async function getPages(
-  operatorId: number | string | null,
+  operatorId: string,
   status: unknown,
+  deptoId: string,
 ) {
   const db = await getClient()
   const collectionProtocolos = db.collection('PROTOCOLOS')
-  console.log(operatorId)
-  console.log(status)
   interface SearchType {
-    operatorId?: number | null
+    operatorId?: unknown
     status?: unknown
+    deptoId?: unknown
   }
   const search: SearchType = {}
   if (
@@ -75,6 +77,16 @@ export async function getPages(
   }
   if (status) {
     search.status = status
+  }
+  if (
+    deptoId !== null &&
+    deptoId !== undefined &&
+    deptoId !== 'all' &&
+    deptoId !== 'emptyDepto'
+  ) {
+    search.deptoId = parseInt(deptoId.toString())
+  } else if (deptoId === 'emptyDepto') {
+    search.deptoId = null
   }
   const totalCount = await collectionProtocolos.countDocuments(search)
 
@@ -82,21 +94,23 @@ export async function getPages(
 }
 
 export async function getConversations(
-  operatorId: number | string | null,
+  operatorId: string,
   status: unknown,
+  deptoId: string,
   page?: number,
   pageSize?: number,
 ) {
   const db = await getClient()
   const collectionProtocolos = db.collection('PROTOCOLOS')
-  console.log(operatorId)
-  console.log(status)
   interface SearchType {
-    operatorId?: number | null
+    operatorId?: unknown
     status?: unknown
+    deptoId?: unknown
   }
   const search: SearchType = {}
   if (
+    !Number.isNaN(operatorId) &&
+    operatorId &&
     operatorId !== null &&
     operatorId !== undefined &&
     operatorId !== 'emptyOperator' &&
@@ -108,6 +122,18 @@ export async function getConversations(
   }
   if (status) {
     search.status = status
+  }
+  if (
+    !Number.isNaN(deptoId) &&
+    deptoId &&
+    deptoId !== null &&
+    deptoId !== undefined &&
+    deptoId !== 'all' &&
+    deptoId !== 'emptyDepto'
+  ) {
+    search.deptoId = parseInt(deptoId.toString())
+  } else if (deptoId === 'emptyDepto') {
+    search.deptoId = null
   }
   console.log('search', search)
 
@@ -154,6 +180,9 @@ export async function getConversations(
               countNotReads: contarNaoLidas(messages),
               photo: elemento.photo || null,
               dateCreated: elemento.dateCreated,
+              botId: elemento.botId,
+              stage: elemento.stage,
+              deptoId: elemento.deptoId,
             }
 
             resultados.push(resultado)
@@ -167,6 +196,7 @@ export async function getConversations(
             name: elemento.name,
             status: elemento.status,
             photo: elemento.photo || null,
+            deptoId: elemento.deptoId,
             dateCreated: elemento.dateCreated,
             finalization: {
               type: elemento.type,

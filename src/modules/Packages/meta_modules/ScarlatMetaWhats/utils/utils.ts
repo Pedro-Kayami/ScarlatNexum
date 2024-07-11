@@ -57,6 +57,14 @@ export async function getType(message) {
         mimeType: baseFormat[0].replace('data:', '').replace(';', ''),
       },
     }
+  } else if (message.type === 'interactive') {
+    return {
+      type: 'chat',
+      message: {
+        type: 'text',
+        text: message.interactive.list_reply.title,
+      },
+    }
   }
 }
 

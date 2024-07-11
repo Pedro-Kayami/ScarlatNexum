@@ -1,24 +1,44 @@
 /* eslint-disable no-async-promise-executor */
-import { MessageRequest } from '@/assets/api2/enums/enumRequest.js'
+import { BSON } from 'mongodb'
+
+import {
+  conversation,
+  MessageRequest,
+} from '@/assets/api2/enums/enumRequest.js'
 import { MessageResponse } from '@/assets/api2/enums/enumResponse.js'
 import {
   addMessageUser,
   createConversation,
   getUUID,
 } from '@/assets/api2/services/response/response.js'
+import { getClient } from '@/assets/database/dataBase.js'
 
-export async function getStage(message: MessageRequest): Promise<string> {
+export async function getStage(conversationId: string): Promise<conversation> {
   return new Promise(async (resolve, reject) => {
     try {
-      const existingId = await getUUID(message.identifier, message.provider)
+      const db = await getClient()
+      const collection = db.collection('PROTOCOLOS')
 
-      if (existingId) {
-        resolve('conversation')
-      } else {
-        resolve('newConversation')
+      const result = await collection.findOne({
+        _id: new BSON.ObjectId(conversationId),
+      })
+
+      const data: conversation = {
+        conversationId: result._id.toHexString(),
+        identifier: result.identifier,
+        firstContact: result.firstContact,
+        name: result.name,
+        operatorId: result.operatorId,
+        status: result.status,
+        provider: result.provider,
+        dateCreated: result.dateCreated,
+        photo: result.photo,
+        stage: result.stage,
+        botId: result.botId,
       }
+      resolve(data)
     } catch (error) {
-      console.error('Error in getStage function:', error)
+      console.error('Get Existing ConversationId: ', error)
       reject(error)
     }
   })
@@ -34,12 +54,14 @@ export async function generateId(
 
       if (existingId) {
         message.conversationId = existingId.toHexString()
+        message.event = 'existingConversation'
       } else {
         message.conversationId = await (
           await createConversation(
             message.identifier,
             message.provider,
             message.name,
+            null,
             null,
             message.photo,
           )

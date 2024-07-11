@@ -3,12 +3,18 @@ import '@/assets/Host/HostExpress.js'
 
 import * as dotenv from 'dotenv'
 
+import { conversation } from '@/assets/api2/enums/enumRequest.js'
+import { MessageResponse } from '@/assets/api2/enums/enumResponse.js'
+// import { MessageRequest } from '@/assets/bot'
+import { generateBot } from '@/assets/bots/index.js'
+import { setBot } from '@/assets/bots/utils/utils'
 import { dispararHook } from '@/assets/Host/serverReturns/webhook/webhook.js'
 import meuEmitter from '@/modules/Events/Emitter.js'
-import { generateId } from '@/modules/Packages/utils/generateConversation.js'
-import ScarlatWpp from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
-
-import { MessageResponse } from './assets/api2/enums/enumResponse.js'
+import {
+  generateId,
+  getStage,
+} from '@/modules/Packages/utils/generateConversation.js'
+import ScarlatWpp from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema'
 
 dotenv.config()
 
@@ -40,10 +46,23 @@ async function processarFila(): Promise<void> {
         continue
       }
       let data: MessageResponse = message
-      if (process.env.NXZAP_LITE === 'false') {
-        data = await generateId(message, 'U')
-      }
 
+      if (process.env.NXZAP_LITE === 'false') {
+        data = await (await generateId(message, 'U')).data
+        console.log('data', data)
+        const botData: conversation = await getStage(data.conversationId)
+        data.provider = botData.provider
+        data.stage = botData.stage
+        data.botId = botData.botId
+        if (botData.botId && botData.botId !== 'NDA') {
+          await generateBot(data, botData.stage, botData.botId)
+        } else if (botData.botId === 'NDA') {
+          console.log("BotId === 'NDA'")
+        } else {
+          await setBot(data.conversationId, 'btc', 0)
+          await generateBot(data, 0, 'btc')
+        }
+      }
       dispararHook(data)
     }
   } catch (error) {

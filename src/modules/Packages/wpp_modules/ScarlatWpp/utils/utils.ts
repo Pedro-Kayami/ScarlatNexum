@@ -4,7 +4,7 @@ import utilsAll from '@/modules/Packages/utils/utilsAll.js'
 
 export async function getType(client, message) {
   const type = message.type
-  if (type === 'chat') {
+  if (type === 'chat' || type === 'list_response') {
     return {
       type: 'chat',
       message: {

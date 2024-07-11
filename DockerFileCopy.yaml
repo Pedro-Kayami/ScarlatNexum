@@ -71,7 +71,7 @@ services:
     environment:
       URL_WEBHOOK_MENSAGENS: 'https://api-credisul.nexum.com.br/api/v1/webhooks/atendimento/mensagens'
       DB_NAME: 'CREDISUL_NXZAP_PRD'
-      DB_URL: 'mongodb://nxzap:Av3M6ZZ3cSKRa5zGE7@mongodb:27017/?retryWrites=true&w=majority'
+      DB_URL: ''mongodb://nxzap:Av3M6ZZ3cSKRa5zGE7@mongodb:27017'/?retryWrites=true&w=majority'
       TOKEN_META: ${TOKEN_META}
       URL_META: ${URL_META}
       URL_META_MEDIA: ${URL_META_MEDIA}
@@ -136,7 +136,7 @@ services:
       - app_network
     depends_on:
       - mongodb
-      
+
   mongodb:
     image: mongo:latest
     container_name: mongodb

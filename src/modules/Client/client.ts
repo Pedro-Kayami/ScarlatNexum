@@ -1,19 +1,10 @@
-import { message } from '@/assets/api2/enums/enumRequest.js'
+import { ClientType } from '@/assets/api2/enums/enumClient'
+import { message } from '@/assets/api2/enums/enumMessage'
 import ScarlatMetaWhats from '@/modules/Packages/meta_modules/ScarlatMetaWhats/Requisicoes/API.js'
 import utilsAll from '@/modules/Packages/utils/utilsAll.js'
 import ScarlatWpp from '@/modules/Packages/wpp_modules/ScarlatWpp/Sistema/sistema.js'
 
-export interface ClientType {
-  sendText?
-  sendTemplate?
-  sendFileBase64?
-  sendMessage?
-  sendFile?
-  getConnectionState?
-  getQrCode?
-}
-
-async function getClient(provider: string): Promise<ClientType> {
+export async function getClient(provider: string): Promise<ClientType> {
   if (provider === 'whats_wpp') {
     return await ScarlatWpp.getClient()
   } else if (provider === 'whats_meta') {
@@ -22,6 +13,49 @@ async function getClient(provider: string): Promise<ClientType> {
     // return ScarlatTelegrama.bot.telegram;
   }
   throw new Error('Invalid provider')
+}
+// sendListMessage('[number]@c.us', {
+//   buttonText: 'Click Me!', //required
+//   description: "Hello it's list message", //required
+//   title: 'Hello use  r', //optional
+//   footer: 'Click and choose one', //optional
+//   sections: [{
+//     title: 'Section 1',
+//     rows: [{
+//       rowId: 'rowid1',
+//       title: 'Row 1',
+//       description: "Hello it's description 1",
+//     },{
+//       rowId: 'rowid2',
+//       title: 'Row 2',
+//       description: "Hello it's description 2",
+//     }]
+//   }]
+// });
+async function sendListClient(
+  identifier: string,
+  provider: string,
+  message: message,
+) {
+  const client = await getClient(provider)
+  try {
+    if (provider === 'whats_wpp') {
+      const identifierUs = identifier + '@c.us'
+      client.sendListMessage(identifierUs, message.list)
+    } else if (provider === 'whats_meta' || provider === 'telegram') {
+      client.sendListMessage(identifier, message.list)
+    } else {
+      throw Error()
+    }
+    return {
+      status: 'success',
+    }
+  } catch (error) {
+    console.error('Error sendTextClient: ', error)
+    return {
+      status: 'error',
+    }
+  }
 }
 
 async function sendTextClient(
@@ -32,15 +66,15 @@ async function sendTextClient(
 ) {
   const client = await getClient(provider)
   try {
+    let sendText = message.text
+    if (name) {
+      sendText = `*${name}*\n${sendText}`
+    }
     if (provider === 'whats_wpp') {
       const identifierUs = identifier + '@c.us'
-      let sendText = message.text
-      if (name) {
-        sendText = `*${name}*\n${sendText}`
-      }
       client.sendText(identifierUs, sendText)
     } else if (provider === 'whats_meta' || provider === 'telegram') {
-      client.sendMessage(identifier, message)
+      client.sendText(identifier, sendText)
     } else {
       throw Error()
     }
@@ -159,4 +193,5 @@ export default {
   sendTextClient,
   sendTemplateClient,
   sendFileBase64Client,
+  sendListClient,
 }

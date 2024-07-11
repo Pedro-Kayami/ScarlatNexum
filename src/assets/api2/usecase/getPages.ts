@@ -10,8 +10,9 @@ export async function GetPages(
   try {
     const operatorId = String(req.query.operatorId)
     const status = String(req.query.status)
+    const deptoId = String(req.query.deptoId)
 
-    const countData = await getPages(operatorId, status)
+    const countData = await getPages(operatorId, deptoId, status)
     res.status(200).json({ countData, status: 'success' })
   } catch (error) {
     console.error('Ocorreu um erro no getPages: ', error)

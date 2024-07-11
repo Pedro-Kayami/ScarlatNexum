@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+import { listMessage } from '@/assets/api2/enums/enumMessage'
 import { sendApiRequest } from '@/modules/Packages/meta_modules/ScarlatMetaWhats/enums/enumRequest'
 import { getIdMedia } from '@/modules/Packages/meta_modules/ScarlatMetaWhats/utils/utils'
 
@@ -7,7 +8,7 @@ const token = process.env.TOKEN_META
 const code = process.env.CODE_META
 const url = process.env.URL_META + code
 
-function sendMessage(from, message) {
+function sendText(from, message: string) {
   const data: sendApiRequest = {
     messaging_product: 'whatsapp',
     recipient_type: 'individual',
@@ -15,7 +16,7 @@ function sendMessage(from, message) {
     type: 'text',
     text: {
       preview_url: false,
-      body: message.text,
+      body: message,
     },
   }
 
@@ -23,6 +24,47 @@ function sendMessage(from, message) {
     'Content-Type': 'application/json',
     Authorization: token,
   }
+  axios
+    .post(url + '/messages', data, {
+      headers,
+    })
+    .then((response) => {
+      console.log('Resposta da API:', response.data)
+    })
+    .catch((error) => {
+      console.error('Erro na requisição:', error)
+    })
+}
+
+function sendListMessage(from, message: listMessage) {
+  message.sections.forEach((section) => {
+    section.rows.forEach((row) => {
+      row.id = row.rowId
+      delete row.rowId
+    })
+  })
+  const data: sendApiRequest = {
+    messaging_product: 'whatsapp',
+    recipient_type: 'individual',
+    to: from,
+    type: 'interactive',
+    interactive: {
+      type: 'list',
+      body: { text: message.title },
+      footer: { text: message.description },
+      action: {
+        button: message.buttonText,
+        sections: message.sections,
+      },
+    },
+  }
+  console.log(data)
+
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: token,
+  }
+
   axios
     .post(url + '/messages', data, {
       headers,
@@ -115,9 +157,10 @@ function sendTemplate(from, template, components) {
 }
 
 const client = {
-  sendMessage,
+  sendText,
   sendTemplate,
   sendFile,
+  sendListMessage,
 }
 
 const getClient = () => {

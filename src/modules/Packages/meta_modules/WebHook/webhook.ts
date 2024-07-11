@@ -28,6 +28,7 @@ router.post('/webhook', async (req: Request, res: Response) => {
     body.entry[0].changes[0].value.messages
   ) {
     const entry = body.entry[0].changes[0].value.messages[0]
+    console.log(entry)
     if (entry) {
       const name = body.entry[0].changes[0].value.contacts[0].profile.name
       const returnType = await client.getType(entry)
