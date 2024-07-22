@@ -59,8 +59,8 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 # Use production node environment by default.
 ENV NXZAP_LITE=false
-ENV NXZAP_WPP=false
-ENV URL_WEBHOOK_MENSAGENS="https://f97bd8845376d61608ed214000c1335a.serveo.net/api/v1/webhooks/atendimento/mensagens"
+ENV NXZAP_WPP=true
+ENV URL_WEBHOOK_MENSAGENS="https://afc5-138-186-2-162.ngrok-free.app/api/v1/webhooks/atendimento/mensagens"
 ENV DB_NAME='ScarlatDataBase2'
 ENV TOKEN_META="Bearer EAAJNmZCG2iSsBO2oo3ywROEBgFZADuSKygGZC3Ttp6J4XxOkvh2i6IamZAV7o5f1F2IGFZAYFBfXgFZBVav0sD3efJUxgAiNb8BlXS5bjYYziA7XZBsoQ2tFRltf5b8bsAv1SwXJg5ZCY2m16MGXyjJ74ugSL5VKudzn6S3ZAl3HITDZAicBIG898JKubxVb9uZC0ZAkOQZDZD"
 ENV CODE_META=138522866009140

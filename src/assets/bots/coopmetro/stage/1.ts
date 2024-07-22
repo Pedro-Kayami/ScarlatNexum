@@ -38,7 +38,7 @@ export async function stage1(message: MessageResponse) {
       'B',
       true,
     )
-    await setBot(message.conversationId, 'btc', 2)
+    await setBot(message.conversationId, 'coopmetro', 2)
   } else {
     const messageReturn = {
       type: 'text',

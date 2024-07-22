@@ -44,7 +44,7 @@ export async function stage4(message: MessageResponse) {
       true,
     )
     client.sendListMessage(message.identifier, list)
-    await setBot(message.conversationId, 'btc', 5)
+    await setBot(message.conversationId, 'coopmetro', 5)
   } else {
     const messageReturn = {
       type: 'text',

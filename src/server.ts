@@ -58,10 +58,10 @@ async function processarFila(): Promise<void> {
           await generateBot(data, botData.stage, botData.botId)
         } else if (botData.botId === 'NDA') {
           console.log("BotId === 'NDA'")
-        } else {
+        } /* else {
           await setBot(data.conversationId, 'btc', 0)
           await generateBot(data, 0, 'btc')
-        }
+        } */
       }
       dispararHook(data)
     }

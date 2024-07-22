@@ -36,7 +36,7 @@ export async function stage3(message: MessageResponse) {
         true,
       )
       client.sendListMessage(message.identifier, list)
-      await setBot(message.conversationId, 'btc', 4)
+      await setBot(message.conversationId, 'coopmetro', 4)
     } else {
       const list = {
         type: 'list',
@@ -73,7 +73,7 @@ export async function stage3(message: MessageResponse) {
         true,
       )
       client.sendListMessage(message.identifier, list)
-      await setBot(message.conversationId, 'btc', 5)
+      await setBot(message.conversationId, 'coopmetro', 5)
     }
   }
 }

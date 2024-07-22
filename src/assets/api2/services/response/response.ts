@@ -266,7 +266,7 @@ export async function updateOperatorId(
 export async function updateStatusConversation(
   conversationId: string,
   status: string,
-  type: string,
+  type?: string,
   observation?: string,
 ) {
   return new Promise(async (resolve, reject) => {

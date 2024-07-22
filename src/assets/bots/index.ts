@@ -1,6 +1,9 @@
 import { MessageResponse } from '@/assets/api2/enums/enumResponse'
 // import { addMessageUser } from '@/assets/api2/services/response/response.js'
-import { stagesBTC } from '@/assets/bots/btc/stages'
+import { stagesBTC } from '@/assets/bots/BotBtc/stages'
+import { stagesCoopmetro } from '@/assets/bots/coopmetro/stages'
+import { stagesIdentifyPa } from '@/assets/bots/identifyPa/stages'
+import { stagesNps } from '@/assets/bots/nps/stages'
 import { stagesSolicEmpres } from '@/assets/bots/solic_empres/stages'
 
 export async function getBtc(message: MessageResponse, stageNumber: number) {
@@ -10,6 +13,36 @@ export async function getBtc(message: MessageResponse, stageNumber: number) {
     id: 'btc',
     name: 'BTC',
     stages,
+  }
+}
+
+export async function getCoopmetro(
+  message: MessageResponse,
+  stageNumber: number,
+) {
+  return {
+    id: 'coopmetro',
+    name: 'Coopmetro',
+    stages: stagesCoopmetro(message, stageNumber),
+  }
+}
+
+export async function getNps(message: MessageResponse, stageNumber: number) {
+  return {
+    id: 'nps',
+    name: 'NPS',
+    stages: stagesNps(message, stageNumber),
+  }
+}
+
+export async function getIdentifyPa(
+  message: MessageResponse,
+  stageNumber: number,
+) {
+  return {
+    id: 'identifyPa',
+    name: 'Identify PA',
+    stages: await stagesIdentifyPa(message, stageNumber),
   }
 }
 
@@ -30,7 +63,13 @@ export async function getBotById(
     case 'btc':
       return await getBtc(message, stageNumber)
     case 'solic_empres':
-      return getSolicEmpres(message, stageNumber)
+      return await getSolicEmpres(message, stageNumber)
+    case 'coopmetro':
+      return await getCoopmetro(message, stageNumber)
+    case 'nps':
+      return await getNps(message, stageNumber)
+    case 'identifyPa':
+      return await getIdentifyPa(message, stageNumber)
     default:
       return null
   }

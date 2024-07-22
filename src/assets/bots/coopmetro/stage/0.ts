@@ -18,7 +18,7 @@ export async function stage0(message: MessageResponse) {
     'B',
     true,
   )
-  await setBot(message.conversationId, 'btc', 1)
+  await setBot(message.conversationId, 'coopmetro', 1)
   client.sendText(message.identifier, messageReturn.text)
   return messageReturn
 }

@@ -35,7 +35,7 @@ export async function stage2(message: MessageResponse) {
         true,
       )
       client.sendListMessage(message.identifier, list)
-      await setBot(message.conversationId, 'btc', 4)
+      await setBot(message.conversationId, 'coopmetro', 4)
     } else {
       const list = {
         type: 'list',
@@ -72,7 +72,7 @@ export async function stage2(message: MessageResponse) {
         true,
       )
       client.sendListMessage(message.identifier, list)
-      await setBot(message.conversationId, 'btc', 5)
+      await setBot(message.conversationId, 'coopmetro', 5)
     }
   } else if (message.message.text === 'Não') {
     const messageReturn = {
@@ -88,6 +88,6 @@ export async function stage2(message: MessageResponse) {
       true,
     )
     client.sendText(message.identifier, messageReturn.text)
-    await setBot(message.conversationId, 'btc', 3)
+    await setBot(message.conversationId, 'coopmetro', 3)
   }
 }

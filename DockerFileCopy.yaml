@@ -1,137 +1,117 @@
-version: '3.8'
+version: '3.3'
 
 services:
   nxzap:
-    image: 'op3000/nxzap:1.1.4'
+    image: 'op3000/nxzap:1.1.7'
     privileged: true
     container_name: nxzap
     restart: unless-stopped
     ports:
       - '8082:8080'
     environment:
+      WHATSAPP_DEVICE_NAME: 'NXZAPPROD'
+      NXZAP_WPP: 'true'
+      NXZAP_LITE: 'false'
       URL_WEBHOOK_MENSAGENS: 'https://nxbr-demonstrativo-api.nexum.com.br/api/v1/webhooks/atendimento/mensagens'
       DB_NAME: 'DEMO_NXZAP_PRD'
       DB_URL: 'mongodb://nxzap:Av3M6ZZ3cSKRa5zGE7@mongodb:27017/?retryWrites=true&w=majority'
-      TOKEN_META: ${TOKEN_META}
-      URL_META: ${URL_META}
-      URL_META_MEDIA: ${URL_META_MEDIA}
-      TOKEN_TELEGRAM: ${TOKEN_TELEGRAM}
     networks:
       - app_network
     depends_on:
       - mongodb
-
-  nxzap-coopacredi:
-    image: 'op3000/nxzap:1.0.6'
+  nxzap-tamarozzi:
+    image: 'op3000/nxzap:1.1.6'
     privileged: true
-    container_name: nxzap-coopacredi
+    container_name: nxzap-tamarozzi
     restart: unless-stopped
     ports:
-      - '8085:8080'
+      - '8096:8080'
     environment:
-      URL_WEBHOOK_MENSAGENS: 'https://api-coopacredi.nexum.com.br/api/v1/webhooks/atendimento/mensagens'
-      DB_NAME: 'COOPACREDI_NXZAP_PRD'
+      WHATSAPP_DEVICE_NAME: 'TAMAROZZI'
+      NXZAP_WPP: 'true'
+      NXZAP_LITE: 'true'
+      DB_NAME: 'TAMAROZZI_NXZAP_PRD'
       DB_URL: 'mongodb://nxzap:Av3M6ZZ3cSKRa5zGE7@mongodb:27017/?retryWrites=true&w=majority'
-      TOKEN_META: ${TOKEN_META}
-      URL_META: ${URL_META}
-      URL_META_MEDIA: ${URL_META_MEDIA}
-      TOKEN_TELEGRAM: ${TOKEN_TELEGRAM}
     networks:
       - app_network
     depends_on:
       - mongodb
 
-  nxzap-coonecta:
-    image: 'op3000/nxzap:1.0.9'
+  nxzap-coopmetro:
+    image: 'op3000/nxzap:1.1.7'
     privileged: true
-    container_name: nxzap-coonecta
+    container_name: nxzap-coopmetro
     restart: unless-stopped
     ports:
-      - '8084:8080'
+      - "8097:8080"
     environment:
-      URL_WEBHOOK_MENSAGENS: 'https://api-coonecta.nexum.com.br/api/v1/webhooks/atendimento/mensagens'
-      DB_NAME: 'CREDISUL_NXZAP_PRD'
+      NXZAP_LITE: 'true'
+      NXZAP_WPP: 'false'
+      URL_WEBHOOK_MENSAGENS: ''
+      DB_NAME: 'NxZapCoopMetro'
       DB_URL: 'mongodb://nxzap:Av3M6ZZ3cSKRa5zGE7@mongodb:27017/?retryWrites=true&w=majority'
-      TOKEN_META: ${TOKEN_META}
-      URL_META: ${URL_META}
-      URL_META_MEDIA: ${URL_META_MEDIA}
-      TOKEN_TELEGRAM: ${TOKEN_TELEGRAM}
+      URL_META: ${URL_META_COOPMETRO}
+      CODE_META: ${CODE_META_COOPMETRO}
+      TOKEN_META: ${TOKEN_META_COOPMETRO}
     networks:
       - app_network
     depends_on:
       - mongodb
 
-  nxzap-credisul:
-    image: 'op3000/nxzap:1.1.0'
+  nxzap-btc:
+    image: 'op3000/nxzap:1.1.7'
     privileged: true
-    container_name: nxzap-credisul
+    container_name: nxzap-btc
     restart: unless-stopped
     ports:
-      - '8095:8080'
+      - '8098:8080'
     environment:
-      URL_WEBHOOK_MENSAGENS: 'https://api-credisul.nexum.com.br/api/v1/webhooks/atendimento/mensagens'
-      DB_NAME: 'CREDISUL_NXZAP_PRD'
-      DB_URL: ''mongodb://nxzap:Av3M6ZZ3cSKRa5zGE7@mongodb:27017'/?retryWrites=true&w=majority'
-      TOKEN_META: ${TOKEN_META}
-      URL_META: ${URL_META}
-      URL_META_MEDIA: ${URL_META_MEDIA}
-      TOKEN_TELEGRAM: ${TOKEN_TELEGRAM}
-    networks:
-      - app_network
-    depends_on:
-      - mongodb
-
-  # nxzap-desenvolvimento:
-  #   image: 'op3000/nxzap:1.1.2'
-  #   privileged: true
-  #   container_name: nxzap-desenvolvimento
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8096:8080"
-  #   environment:
-  #     URL_WEBHOOK_MENSAGENS: ''
-  #     DB_NAME: 'CREDISUL_NXZAP_PRD'
-  #     DB_URL: 'mongodb://nxzap:Av3M6ZZ3cSKRa5zGE7@mongodb:27017/?retryWrites=true&w=majority'
-  #     TOKEN_META: ${TOKEN_META}
-  #     URL_META: ${URL_META}
-  #     URL_META_MEDIA: ${URL_META_MEDIA}
-  #     TOKEN_TELEGRAM: ${TOKEN_TELEGRAM}
-  #   networks:
-  #     - app_network
-  #   depends_on:
-  #     - mongodb
-
-  # nxzap-coopmetro:
-  #   image: 'op3000/nxzap:1.1.2'
-  #   privileged: true
-  #   container_name: nxzap-coopmetro
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8097:8080"
-  #   environment:
-  #     URL_WEBHOOK_MENSAGENS: ''
-  #     DB_NAME: 'NxZapCoopMetro'
-  #     DB_URL: 'mongodb://nxzap:Av3M6ZZ3cSKRa5zGE7@mongodb:27017/?retryWrites=true&w=majority'
-  #     TOKEN_META: ${TOKEN_META}
-  #     URL_META: ${URL_META}
-  #     URL_META_MEDIA: ${URL_META_MEDIA}
-  #     TOKEN_TELEGRAM: ${TOKEN_TELEGRAM}
-  #   networks:
-  #     - app_network
-  #   depends_on:
-  #     - mongodb
-
-  nx-encurtador:
-    image: 'op3000/nxencurtador:1.0.4'
-    privileged: true
-    container_name: nxencurtador
-    restart: unless-stopped
-    ports:
-      - '8086:8093'
-    environment:
-      DB_NAME: 'NEXUM_NXENCURTADOR_PRD'
+      WHATSAPP_DEVICE_NAME: 'BTC_NXZAP_PRD'
+      NXZAP_WPP: 'true'
+      NXZAP_LITE: 'false'
+      URL_WEBHOOK_MENSAGENS: 'https://api-btc.nexum.com.br/api/v1/webhooks/atendimento/mensagens'
+      DB_NAME: 'BTC_NXZAP_PRD'
       DB_URL: 'mongodb://nxzap:Av3M6ZZ3cSKRa5zGE7@mongodb:27017/?retryWrites=true&w=majority'
-      URL: 'https://encurtador.nexum.com.br'
+    networks:
+      - app_network
+    depends_on:
+      - mongodb
+
+  nxzap-credipontal:
+    image: 'op3000/nxzap:1.1.7'
+    privileged: true
+    container_name: nxzap-credipontal
+    restart: unless-stopped
+    ports:
+      - '8099:8080'
+    environment:
+      WHATSAPP_DEVICE_NAME: 'CREDIPONTAL_NXZAP_PROD'
+      NXZAP_WPP: 'true'
+      NXZAP_LITE: 'false'
+      URL_WEBHOOK_MENSAGENS: 'https://api-hom.credipontal.com.br/api/v1/webhooks/atendimento/mensagens'
+      DB_NAME: 'CREDIPONTAL_NXZAP_PRD'
+      DB_URL: 'mongodb://nxzap:Av3M6ZZ3cSKRa5zGE7@mongodb:27017/?retryWrites=true&w=majority'
+    networks:
+      - app_network
+    depends_on:
+      - mongodb
+
+  nxzap-coopmetro:
+    image: 'op3000/nxzap:1.1.8'
+    privileged: true
+    container_name: nxzap-coopmetro
+    restart: unless-stopped
+    ports:
+      - "8097:8080"
+    environment:
+      NXZAP_LITE: 'true'
+      NXZAP_WPP: 'false'
+      URL_WEBHOOK_MENSAGENS: ''
+      DB_NAME: 'NxZapCoopMetro'
+      DB_URL: ${URL_MONGO}
+      URL_META: ${URL_META_COOPMETRO}
+      CODE_META: ${CODE_META_COOPMETRO}
+      TOKEN_META: ${TOKEN_META_COOPMETRO}
     networks:
       - app_network
     depends_on:
@@ -142,7 +122,7 @@ services:
     container_name: mongodb
     restart: unless-stopped
     ports:
-      - '8083:27017'
+      - '27017:27017'
     environment:
       MONGO_INITDB_ROOT_USERNAME: nxzap
       MONGO_INITDB_ROOT_PASSWORD: Av3M6ZZ3cSKRa5zGE7

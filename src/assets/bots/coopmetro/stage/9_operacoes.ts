@@ -44,5 +44,5 @@ export async function stage9(message: MessageResponse) {
     true,
   )
   client.sendListMessage(message.identifier, list)
-  await setBot(message.conversationId, 'btc', 10)
+  await setBot(message.conversationId, 'coopmetro', 10)
 }

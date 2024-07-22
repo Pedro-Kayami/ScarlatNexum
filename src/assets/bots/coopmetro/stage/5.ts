@@ -37,7 +37,7 @@ export async function stage5(message: MessageResponse) {
       true,
     )
     client.sendListMessage(message.identifier, list)
-    await setBot(message.conversationId, 'btc', 6)
+    await setBot(message.conversationId, 'coopmetro', 6)
   } else if (message.message.text === 'Lojas Cooperado') {
     const messageReturn = {
       type: 'text',
