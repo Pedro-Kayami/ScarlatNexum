@@ -4,10 +4,19 @@ import { addMessageUser } from '@/assets/api2/services/response/response'
 import { getClient } from '@/modules/Client/client'
 
 import { setBot } from '../../utils/utils'
+import { ABASTECIMENTO } from '../repository/InterfaceMetro'
+import RepositoryMetro from '../repository/RepositoryMetro'
 
 export async function stage3(message: MessageResponse) {
   const client: ClientType = await getClient(message.provider)
-  const qtdPlacas = ['PLACA 1234-ABCDF', 'PLACA 1234-ABCDF']
+  const retornoAPI = (await RepositoryMetro.getAPI('abastecimentos', {
+    ABASTECIMENTO: [
+      {
+        Chave: (await RepositoryMetro.getData(message.conversationId)).document,
+      },
+    ],
+  })) as ABASTECIMENTO[]
+  const qtdPlacas = getPlacas(retornoAPI)
   if (isNameValid(message.message.text)) {
     if (qtdPlacas.length > 1) {
       const list = {
@@ -38,43 +47,41 @@ export async function stage3(message: MessageResponse) {
       client.sendListMessage(message.identifier, list)
       await setBot(message.conversationId, 'coopmetro', 4)
     } else {
-      const list = {
-        type: 'list',
-        buttonText: 'Clique aqui!', // required
-        description: 'Selecione uma opção!', // required
-        title:
-          'Obrigado pelas informações. Por gentileza, selecione abaixo a opção desejada:',
-        sections: [
-          {
-            title: 'Escolha uma opção:',
-            rows: [
-              {
-                rowId: 'rowid1',
-                title: 'Operações',
-              },
-              {
-                rowId: 'rowid2',
-                title: 'Lojas Cooperado',
-              },
-              {
-                rowId: 'rowid2',
-                title: 'Portal',
-              },
-            ],
-          },
-        ],
+      const messageReturn = {
+        type: 'text',
+        text: 'Obrigado pelas informações. Digite a placa de seu veiculo?',
       }
       await addMessageUser(
         message.conversationId,
-        'list',
+        'chat',
         message.identifier,
-        list,
+        messageReturn,
         'B',
         true,
       )
-      client.sendListMessage(message.identifier, list)
-      await setBot(message.conversationId, 'coopmetro', 5)
+      client.sendText(message.identifier, messageReturn.text)
+      await setBot(message.conversationId, 'coopmetro', 4)
     }
+  } else {
+    const messageReturn = {
+      type: 'text',
+      text: 'Nome inválido. Por favor, informe um nome válido.',
+    }
+    await addMessageUser(
+      message.conversationId,
+      'chat',
+      message.identifier,
+      messageReturn,
+      'B',
+      true,
+    )
+    client.sendText(message.identifier, messageReturn.text)
+  }
+  const data = await RepositoryMetro.getData(message.conversationId)
+  if (data.name) {
+    await RepositoryMetro.updateData(message.conversationId, {
+      name: message.message.text,
+    })
   }
 }
 
@@ -85,4 +92,14 @@ function isNameValid(name: string): boolean {
   // Verifica se o nome contém apenas letras e espaços (e possivelmente caracteres acentuados)
   // Esta expressão regular pode ser ajustada conforme necessário
   return /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ ]+$/.test(name)
+}
+
+function getPlacas(params: ABASTECIMENTO[]) {
+  const qtdPlacas = []
+  params.forEach((element) => {
+    if (!qtdPlacas.includes(element.CODIGO)) {
+      qtdPlacas.push(element.CODIGO)
+    }
+  })
+  return qtdPlacas
 }

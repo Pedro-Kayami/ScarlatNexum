@@ -4,9 +4,19 @@ import { addMessageUser } from '@/assets/api2/services/response/response'
 import { setBot } from '@/assets/bots/utils/utils'
 import { getClient } from '@/modules/Client/client'
 
+import { ABASTECIMENTO } from '../repository/InterfaceMetro'
+import RepositoryMetro from '../repository/RepositoryMetro'
+
 export async function stage2(message: MessageResponse) {
   const client: ClientType = await getClient(message.provider)
-  const qtdPlacas = ['PLACA 1234-ABCDF', 'PLACA 1234-ABCDF']
+  const retornoAPI = (await RepositoryMetro.getAPI('abastecimentos', {
+    ABASTECIMENTO: [
+      {
+        Chave: (await RepositoryMetro.getData(message.conversationId)).document,
+      },
+    ],
+  })) as ABASTECIMENTO[]
+  const qtdPlacas = getPlacas(retornoAPI)
   if (message.message.text === 'Sim') {
     if (qtdPlacas.length > 1) {
       const list = {
@@ -37,42 +47,20 @@ export async function stage2(message: MessageResponse) {
       client.sendListMessage(message.identifier, list)
       await setBot(message.conversationId, 'coopmetro', 4)
     } else {
-      const list = {
-        type: 'list',
-        buttonText: 'Clique aqui!', // required
-        description: 'Selecione uma opção!', // required
-        title:
-          'Obrigado pelas informações. Por gentileza, selecione abaixo a opção desejada:',
-        sections: [
-          {
-            title: 'Escolha uma opção:',
-            rows: [
-              {
-                rowId: 'rowid1',
-                title: 'Operações',
-              },
-              {
-                rowId: 'rowid2',
-                title: 'Lojas Cooperado',
-              },
-              {
-                rowId: 'rowid2',
-                title: 'Portal',
-              },
-            ],
-          },
-        ],
+      const messageReturn = {
+        type: 'text',
+        text: 'Obrigado pelas informações. Digite a placa de seu veiculo?',
       }
       await addMessageUser(
         message.conversationId,
-        'list',
+        'chat',
         message.identifier,
-        list,
+        messageReturn,
         'B',
         true,
       )
-      client.sendListMessage(message.identifier, list)
-      await setBot(message.conversationId, 'coopmetro', 5)
+      client.sendText(message.identifier, messageReturn.text)
+      await setBot(message.conversationId, 'coopmetro', 4)
     }
   } else if (message.message.text === 'Não') {
     const messageReturn = {
@@ -90,4 +78,14 @@ export async function stage2(message: MessageResponse) {
     client.sendText(message.identifier, messageReturn.text)
     await setBot(message.conversationId, 'coopmetro', 3)
   }
+}
+
+function getPlacas(params: ABASTECIMENTO[]) {
+  const qtdPlacas = []
+  params.forEach((element) => {
+    if (!qtdPlacas.includes(element.CODIGO)) {
+      qtdPlacas.push(element.CODIGO)
+    }
+  })
+  return qtdPlacas
 }

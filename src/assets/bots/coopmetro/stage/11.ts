@@ -4,11 +4,16 @@ import { addMessageUser } from '@/assets/api2/services/response/response'
 import { setBot } from '@/assets/bots/utils/utils'
 import { getClient } from '@/modules/Client/client'
 
-export async function stage0(message: MessageResponse) {
+import RepositoryMetro from '../repository/RepositoryMetro'
+
+export async function stage11(message: MessageResponse) {
   const client: ClientType = await getClient(message.provider)
+  await RepositoryMetro.updateData(message.conversationId, {
+    details_aditional: message.message.text,
+  })
   const messageReturn = {
     type: 'text',
-    text: 'Olá, tudo bem?\nSeja bem vindo ao setor de Relacionamento ao Cooperado.\nPara agilizar o seu atendimento, por gentileza, informe o nome completo da sua mãe.',
+    text: 'Descreva sua solicação, por favor.',
   }
   await addMessageUser(
     message.conversationId,
@@ -18,7 +23,6 @@ export async function stage0(message: MessageResponse) {
     'B',
     true,
   )
-  await setBot(message.conversationId, 'coopmetro', 13)
+  await setBot(message.conversationId, 'coopmetro', 12)
   client.sendText(message.identifier, messageReturn.text)
-  return messageReturn
 }

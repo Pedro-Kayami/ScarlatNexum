@@ -21,11 +21,11 @@ export async function stage7(message: MessageResponse) {
           },
           {
             rowId: 'rowid2',
-            title: 'Ambulância/Backup',
+            title: 'Ambulância/ Backup',
           },
           {
             rowId: 'rowid3',
-            title: 'Viagens/Frete KM',
+            title: 'Viagens/ Frete KM',
           },
           {
             rowId: 'rowid4',
@@ -39,6 +39,7 @@ export async function stage7(message: MessageResponse) {
       },
     ],
   }
+
   await addMessageUser(
     message.conversationId,
     'list',

@@ -10,6 +10,9 @@ import { stage7 } from '@/assets/bots/coopmetro/stage/7_mercadolivre'
 import { stage8 } from '@/assets/bots/coopmetro/stage/8_mercadolivre'
 import { stage9 } from '@/assets/bots/coopmetro/stage/9_operacoes'
 import { stage10 } from '@/assets/bots/coopmetro/stage/10_operacoes'
+import { stage11 } from '@/assets/bots/coopmetro/stage/11'
+import { stage12 } from '@/assets/bots/coopmetro/stage/12'
+import { stage13 } from '@/assets/bots/coopmetro/stage/13'
 
 export async function stagesCoopmetro(
   message: MessageResponse,
@@ -38,6 +41,12 @@ export async function stagesCoopmetro(
       return await stage9(message)
     case 10:
       return await stage10(message)
+    case 11:
+      return await stage11(message)
+    case 12:
+      return await stage12(message)
+    case 13:
+      return await stage13(message)
     default:
       console.error('Invalid stage number:', stageNumber)
   }

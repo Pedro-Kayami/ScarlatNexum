@@ -13,6 +13,7 @@ export async function GetConversationUseCase(
     let status
     let page
     let pageSize
+    let botId
     if (req.query.page) {
       page = Number(req.query.page)
     }
@@ -28,6 +29,9 @@ export async function GetConversationUseCase(
     if (req.query.deptoId) {
       deptoId = String(req.query.deptoId)
     }
+    if (req.query.botId) {
+      botId = String(req.query.botId)
+    }
 
     const data = await getConversations(
       operatorId,
@@ -35,6 +39,7 @@ export async function GetConversationUseCase(
       deptoId,
       page,
       pageSize,
+      botId,
     )
     if (!data || data.length === 0) {
       res

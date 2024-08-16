@@ -4,6 +4,8 @@ import { addMessageUser } from '@/assets/api2/services/response/response'
 import { setBot } from '@/assets/bots/utils/utils'
 import { getClient } from '@/modules/Client/client'
 
+import RepositoryMetro from '../repository/RepositoryMetro'
+
 export async function stage10(message: MessageResponse) {
   const client: ClientType = await getClient(message.provider)
   let list
@@ -23,7 +25,7 @@ export async function stage10(message: MessageResponse) {
             },
             {
               rowId: 'rowid2',
-              title: 'Data de repasse da operação',
+              title: 'Data da operação',
             },
             {
               rowId: 'rowid3',
@@ -38,8 +40,8 @@ export async function stage10(message: MessageResponse) {
       ],
     }
     client.sendListMessage(message.identifier, list)
-    await setBot(message.conversationId, 'NDA', null)
-  } else if (message.message.text === 'Viagens/Romaneio/Rota') {
+    await setBot(message.conversationId, 'coopmetro', 11)
+  } else if (message.message.text === 'Viagens/ Romaneio / Rota') {
     list = {
       type: 'list',
       buttonText: 'Clique aqui!', // required
@@ -74,7 +76,7 @@ export async function stage10(message: MessageResponse) {
       ],
     }
     client.sendListMessage(message.identifier, list)
-    await setBot(message.conversationId, 'NDA', null)
+    await setBot(message.conversationId, 'coopmetro', 11)
   } else if (message.message.text === 'Debitos') {
     list = {
       type: 'list',
@@ -106,7 +108,7 @@ export async function stage10(message: MessageResponse) {
       ],
     }
     client.sendListMessage(message.identifier, list)
-    await setBot(message.conversationId, 'NDA', null)
+    await setBot(message.conversationId, 'coopmetro', 11)
   } else if (message.message.text === 'Outros Assuntos') {
     list = {
       type: 'list',
@@ -142,7 +144,7 @@ export async function stage10(message: MessageResponse) {
       ],
     }
     client.sendListMessage(message.identifier, list)
-    await setBot(message.conversationId, 'NDA', null)
+    await setBot(message.conversationId, 'coopmetro', 11)
   } else {
     const messageReturn = {
       type: 'text',
@@ -159,6 +161,9 @@ export async function stage10(message: MessageResponse) {
     client.sendText(message.identifier, messageReturn.text)
     return
   }
+  await RepositoryMetro.updateData(message.conversationId, {
+    subject: message.message.text,
+  })
   await addMessageUser(
     message.conversationId,
     'list',

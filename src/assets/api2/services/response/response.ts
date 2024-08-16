@@ -276,7 +276,7 @@ export async function updateStatusConversation(
         message: 'Not conversationId existing or it is finished',
       })
     }
-    if (!(status === 'F' || status === 'C')) {
+    if (!(status === 'F' || status === 'C' || status === 'A')) {
       return resolve({
         status: 'error',
         message: 'Invalid status',
@@ -286,20 +286,18 @@ export async function updateStatusConversation(
     try {
       const dateMessage = new Date()
       const db = await getClient()
-      const collection: Collection = db.collection('PROTOCOLOS')
+      const collection = db.collection('PROTOCOLOS')
+
+      const updateFields = {
+        ...(status && { status }),
+        ...(type && { type }),
+        ...(observation && { observation: observation || '' }),
+        dateFinalization: dateMessage.toISOString(),
+      }
 
       await collection.updateMany(
-        {
-          _id: new BSON.ObjectId(conversationId),
-        },
-        {
-          $set: {
-            status,
-            type,
-            observation: observation || '',
-            dateFinalization: dateMessage.toISOString(),
-          },
-        },
+        { _id: new BSON.ObjectId(conversationId) },
+        { $set: updateFields },
       )
 
       resolve({

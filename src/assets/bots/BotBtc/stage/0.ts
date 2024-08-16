@@ -32,15 +32,7 @@ export async function stage0(message: MessageResponse) {
             },
             {
               rowId: '4',
-              title: 'Social',
-            },
-            {
-              rowId: '5',
-              title: 'Restaurantes',
-            },
-            {
-              rowId: '6',
-              title: 'Reservas',
+              title: 'Compras',
             },
           ],
         },

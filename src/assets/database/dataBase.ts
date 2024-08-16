@@ -46,6 +46,28 @@ export async function createCollectionIfNotExists(): Promise<void> {
   }
 }
 
+export async function createCollections(collection: string): Promise<void> {
+  try {
+    const client = await MongoClient.connect(process.env.DB_URL)
+    const db = client.db(dbName)
+
+    const collections = await db.listCollections().toArray()
+    const collectionNames = collections.map((col) => col.name)
+
+    if (collectionNames.includes(collection)) {
+      console.log(`A coleção ${collection} já existe.`)
+      return
+    }
+
+    await db.createCollection(collection)
+    console.log(`A coleção ${collection} foi criada com sucesso.`)
+
+    client.close()
+  } catch (error) {
+    console.error('Erro ao criar a coleção:', error)
+  }
+}
+
 export async function getClient(): Promise<Db> {
   try {
     const client = await MongoClient.connect(process.env.DB_URL, {

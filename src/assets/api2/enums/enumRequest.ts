@@ -44,6 +44,12 @@ export interface controllerBotRequest {
   botId: string
 }
 
+export interface finalization {
+  type?: string
+  observation?: string
+  dateFinalization: string
+}
+
 export interface conversation {
   _id?: BSON.ObjectId
   firstContact?: string
@@ -58,7 +64,11 @@ export interface conversation {
   photo?: string
   stage?: number
   botId?: string
+  type?: string
+  observation?: string
+  dateFinalization?: string
   deptoId?: string
+  finalization?: finalization
 }
 
 export interface updateConversationRequest {

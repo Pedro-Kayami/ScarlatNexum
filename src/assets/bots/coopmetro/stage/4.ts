@@ -4,11 +4,11 @@ import { addMessageUser } from '@/assets/api2/services/response/response'
 import { getClient } from '@/modules/Client/client'
 
 import { setBot } from '../../utils/utils'
+import RepositoryMetro from '../repository/RepositoryMetro'
 
 export async function stage4(message: MessageResponse) {
   const client: ClientType = await getClient(message.provider)
-  const qtdPlacas = ['PLACA 1234-ABCDF', 'PLACA 1234-ABCDF']
-  if (qtdPlacas.includes(message.message.text)) {
+  if (validarPlaca(message.message.text)) {
     const list = {
       type: 'list',
       buttonText: 'Clique aqui!', // required
@@ -21,15 +21,19 @@ export async function stage4(message: MessageResponse) {
           rows: [
             {
               rowId: 'rowid1',
-              title: 'Operações',
+              title: 'Solicitação',
             },
             {
               rowId: 'rowid2',
-              title: 'Lojas Cooperado',
+              title: 'Inovação / Melhorias',
             },
             {
               rowId: 'rowid3',
-              title: 'Portal',
+              title: 'Sugestão / Elogios',
+            },
+            {
+              rowId: 'rowid4',
+              title: 'Reclamação',
             },
           ],
         },
@@ -43,12 +47,15 @@ export async function stage4(message: MessageResponse) {
       'B',
       true,
     )
+    await RepositoryMetro.updateData(message.conversationId, {
+      plate: message.message.text,
+    })
     client.sendListMessage(message.identifier, list)
     await setBot(message.conversationId, 'coopmetro', 5)
   } else {
     const messageReturn = {
       type: 'text',
-      text: 'Placa não encontrada. Por favor, verifique se o número está correto e tente novamente.',
+      text: 'Placa inválida. Digite a placa de seu veiculo?',
     }
     await addMessageUser(
       message.conversationId,
@@ -60,4 +67,19 @@ export async function stage4(message: MessageResponse) {
     )
     client.sendText(message.identifier, messageReturn.text)
   }
+}
+
+// function getPlacas(params: ABASTECIMENTO[]) {
+//   const qtdPlacas = []
+//   params.forEach((element) => {
+//     if (!qtdPlacas.includes(element.CODIGO)) {
+//       qtdPlacas.push(element.CODIGO)
+//     }
+//   })
+//   return qtdPlacas
+// }
+
+function validarPlaca(placa: string): boolean {
+  const regex = /^[A-Z0-9]{7}$/i
+  return regex.test(placa)
 }

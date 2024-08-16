@@ -21,7 +21,7 @@ export async function stage9(message: MessageResponse) {
           },
           {
             rowId: 'rowid3',
-            title: 'Viagens/Romaneio/Rota',
+            title: 'Viagens/ Romaneio / Rota',
           },
           {
             rowId: 'rowid4',

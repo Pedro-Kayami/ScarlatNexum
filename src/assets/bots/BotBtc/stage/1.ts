@@ -1,67 +1,19 @@
 import { ClientType } from '@/assets/api2/enums/enumClient'
 import { MessageResponse } from '@/assets/api2/enums/enumResponse'
-import { addMessageUser } from '@/assets/api2/services/response/response'
+import {
+  addMessageUser,
+  updateOperatorId,
+} from '@/assets/api2/services/response/response'
+import RepositoryBTC from '@/assets/bots/BotBtc/repository/RepositoryBTC'
 import { setBot } from '@/assets/bots/utils/utils'
 import { getClient } from '@/modules/Client/client'
 
+import { dataBTC } from '../repository/InterfaceBTC'
+
 export async function stage1(message: MessageResponse) {
   const client: ClientType = await getClient(message.provider)
-  if (message.message.text === 'Esportes') {
-    const list = {
-      type: 'list',
-      buttonText: 'Clique aqui!', // required
-      description: 'Selecione uma opção!', // required
-      sections: [
-        {
-          title: 'Opções',
-          rows: [
-            {
-              rowId: '1',
-              title: 'Futebol',
-            },
-            {
-              rowId: '2',
-              title: 'Tenis',
-            },
-            {
-              rowId: '3',
-              title: 'Beach Tenis',
-            },
-            {
-              rowId: '4',
-              title: 'Volei',
-            },
-            {
-              rowId: '5',
-              title: 'Futvolei',
-            },
-            {
-              rowId: '6',
-              title: 'Natação',
-            },
-            {
-              rowId: '7',
-              title: 'Academia',
-            },
-            {
-              rowId: '8',
-              title: 'Escolinha de Futebol',
-            },
-          ],
-        },
-      ],
-    }
-    addMessageUser(
-      message.conversationId,
-      'list',
-      message.identifier,
-      list,
-      'B',
-      true,
-    )
-    client.sendListMessage(message.identifier, list)
-    setBot(message.conversationId, 'btc', 2)
-  } else if (message.message.text === 'Social') {
+  if (message.message.text === 'Social') {
+    updateOperatorId(message.conversationId, null, 4)
     client.sendText(
       message.identifier,
       'Ainda não temos eventos agendados para os próximos dias.',
@@ -159,8 +111,30 @@ export async function stage1(message: MessageResponse) {
     message.message.text === 'Secretária' ||
     message.message.text === 'Departamento Financeiro' ||
     message.message.text === 'Reservas' ||
-    message.message.text === 'Financeiro'
+    message.message.text === 'Financeiro' ||
+    message.message.text === 'Esportes' ||
+    message.message.text === 'Compras'
   ) {
+    const data: dataBTC = {
+      conversationId: message.conversationId,
+      service: message.message.text,
+    }
+    if (message.message.text === 'Secretária') {
+      updateOperatorId(message.conversationId, null, 4)
+      RepositoryBTC.addData(message.conversationId, data)
+    }
+    if (message.message.text === 'Financeiro') {
+      RepositoryBTC.addData(message.conversationId, data)
+      updateOperatorId(message.conversationId, null, 7)
+    }
+    if (message.message.text === 'Esportes') {
+      RepositoryBTC.addData(message.conversationId, data)
+      updateOperatorId(message.conversationId, null, 10)
+    }
+    if (message.message.text === 'Compras') {
+      RepositoryBTC.addData(message.conversationId, data)
+      updateOperatorId(message.conversationId, null, 16)
+    }
     client.sendText(
       message.identifier,
       'Aguarde um momento, pois estou te transferindo para um dos nossos consultores',
@@ -177,7 +151,13 @@ export async function stage1(message: MessageResponse) {
       true,
     )
     setBot(message.conversationId, 'NDA', null)
-  } else if (message.message.text === 'Quero virar sócio') {
+  } else if (message.message.text === 'Compras') {
+    const data: dataBTC = {
+      conversationId: message.conversationId,
+      service: message.message.text,
+    }
+    RepositoryBTC.addData(message.conversationId, data)
+    updateOperatorId(message.conversationId, null, 16)
     const list = {
       type: 'list',
       title: 'Que tipo de plano você gostaria de estar se associando?', // required

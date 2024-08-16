@@ -3,6 +3,8 @@ import { BSON } from 'mongodb'
 import { getClient } from '@/assets/database/dataBase.js'
 import client from '@/modules/Client/client.js'
 
+import { conversation } from '../../enums/enumRequest'
+
 export async function getMessagesId(conversationId: string) {
   try {
     const dataConversation: string = await getDataConversation(conversationId)
@@ -56,6 +58,7 @@ export async function getPages(
   operatorId: string,
   status: unknown,
   deptoId: string,
+  botId?: string,
 ) {
   const db = await getClient()
   const collectionProtocolos = db.collection('PROTOCOLOS')
@@ -63,49 +66,7 @@ export async function getPages(
     operatorId?: unknown
     status?: unknown
     deptoId?: unknown
-  }
-  const search: SearchType = {}
-  if (
-    operatorId !== null &&
-    operatorId !== undefined &&
-    operatorId !== 'emptyOperator' &&
-    operatorId !== 'all'
-  ) {
-    search.operatorId = parseInt(operatorId.toString())
-  } else if (operatorId === 'emptyOperator') {
-    search.operatorId = null
-  }
-  if (status) {
-    search.status = status
-  }
-  if (
-    deptoId !== null &&
-    deptoId !== undefined &&
-    deptoId !== 'all' &&
-    deptoId !== 'emptyDepto'
-  ) {
-    search.deptoId = parseInt(deptoId.toString())
-  } else if (deptoId === 'emptyDepto') {
-    search.deptoId = null
-  }
-  const totalCount = await collectionProtocolos.countDocuments(search)
-
-  return totalCount
-}
-
-export async function getConversations(
-  operatorId: string,
-  status: unknown,
-  deptoId: string,
-  page?: number,
-  pageSize?: number,
-) {
-  const db = await getClient()
-  const collectionProtocolos = db.collection('PROTOCOLOS')
-  interface SearchType {
-    operatorId?: unknown
-    status?: unknown
-    deptoId?: unknown
+    botId?: unknown
   }
   const search: SearchType = {}
   if (
@@ -134,6 +95,61 @@ export async function getConversations(
     search.deptoId = parseInt(deptoId.toString())
   } else if (deptoId === 'emptyDepto') {
     search.deptoId = null
+  }
+  if (botId && botId !== null && botId !== undefined) {
+    search.botId = botId
+  }
+  const totalCount = await collectionProtocolos.countDocuments(search)
+
+  return totalCount
+}
+
+export async function getConversations(
+  operatorId: string,
+  status: unknown,
+  deptoId: string,
+  page?: number,
+  pageSize?: number,
+  botId?: string,
+) {
+  const db = await getClient()
+  const collectionProtocolos = db.collection('PROTOCOLOS')
+  interface SearchType {
+    operatorId?: unknown
+    status?: unknown
+    deptoId?: unknown
+    botId?: unknown
+  }
+  const search: SearchType = {}
+  if (
+    !Number.isNaN(operatorId) &&
+    operatorId &&
+    operatorId !== null &&
+    operatorId !== undefined &&
+    operatorId !== 'emptyOperator' &&
+    operatorId !== 'all'
+  ) {
+    search.operatorId = parseInt(operatorId.toString())
+  } else if (operatorId === 'emptyOperator') {
+    search.operatorId = null
+  }
+  if (status) {
+    search.status = status
+  }
+  if (
+    !Number.isNaN(deptoId) &&
+    deptoId &&
+    deptoId !== null &&
+    deptoId !== undefined &&
+    deptoId !== 'all' &&
+    deptoId !== 'emptyDepto'
+  ) {
+    search.deptoId = parseInt(deptoId.toString())
+  } else if (deptoId === 'emptyDepto') {
+    search.deptoId = null
+  }
+  if (botId && botId !== null && botId !== undefined) {
+    search.botId = botId
   }
   console.log('search', search)
 
@@ -183,6 +199,7 @@ export async function getConversations(
               botId: elemento.botId,
               stage: elemento.stage,
               deptoId: elemento.deptoId,
+              finalizations: await getFinalizations(elemento.identifier),
             }
 
             resultados.push(resultado)
@@ -242,6 +259,29 @@ async function getDataMessages(conversationId: string) {
   return data
 }
 
+async function getFinalizations(identifier: string) {
+  const db = await getClient()
+  const collection = db.collection('PROTOCOLOS')
+  const dataFinalizations: unknown = await collection
+    .find({
+      identifier,
+      status: 'F',
+    })
+    .toArray()
+  const data = dataFinalizations as [conversation]
+  const finalizations = []
+  data.forEach((element) => {
+    finalizations.push({
+      conversationId: element._id.toHexString(),
+      type: element.type,
+      dateCreated: element.dateCreated,
+      observation: element.observation,
+      dateFinalization: element.dateFinalization,
+    })
+  })
+  return finalizations
+}
+
 async function getDataConversation(conversationId: string) {
   try {
     const db = await getClient()
@@ -258,4 +298,75 @@ async function getDataConversation(conversationId: string) {
     console.error('Erro getDataConversation', error)
     return error
   }
+}
+
+export async function getOneConversation(conversationId: string) {
+  const db = await getClient()
+  const collectionProtocolos = db.collection('PROTOCOLOS')
+  const search = {
+    _id: new BSON.ObjectId(conversationId),
+  }
+
+  const query = collectionProtocolos.findOne(search)
+  const elemento = (await query) as conversation
+
+  let resultado: unknown = {}
+
+  try {
+    if (elemento.status === 'A') {
+      const messages: unknown = await getDataMessages(
+        elemento._id.toHexString(),
+      )
+      let lastMessage = {}
+      if (Array.isArray(messages)) {
+        const lastMessagePos = messages[messages.length - 1]
+        lastMessage = {
+          _id: lastMessagePos._id,
+          message: lastMessagePos.message,
+          read: lastMessagePos.read,
+          to: lastMessagePos.to,
+          type: lastMessagePos.type,
+          conversationId: lastMessagePos.conversationId,
+          dateMessage: lastMessagePos.dateMessage,
+        }
+
+        resultado = {
+          conversationId: elemento._id.toHexString(),
+          provider: elemento.provider,
+          identifier: elemento.identifier,
+          lastMessage,
+          operatorId: elemento.operatorId,
+          name: elemento.name,
+          status: elemento.status,
+          countNotReads: contarNaoLidas(messages),
+          photo: elemento.photo || null,
+          dateCreated: elemento.dateCreated,
+          botId: elemento.botId,
+          stage: elemento.stage,
+          deptoId: elemento.deptoId,
+          finalizations: await getFinalizations(elemento.identifier),
+        }
+      }
+    } else {
+      resultado = {
+        conversationId: elemento._id.toHexString(),
+        provider: elemento.provider,
+        identifier: elemento.identifier,
+        operatorId: elemento.operatorId,
+        name: elemento.name,
+        status: elemento.status,
+        photo: elemento.photo || null,
+        deptoId: elemento.deptoId,
+        dateCreated: elemento.dateCreated,
+        finalization: {
+          type: elemento.type,
+          observation: elemento.observation,
+          dateFinalization: elemento.dateFinalization,
+        },
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching data for Protocolo ID:', elemento._id, error)
+  }
+  return resultado
 }

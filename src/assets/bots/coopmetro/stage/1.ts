@@ -1,16 +1,65 @@
 import { ClientType } from '@/assets/api2/enums/enumClient'
 import { MessageResponse } from '@/assets/api2/enums/enumResponse'
 import { addMessageUser } from '@/assets/api2/services/response/response'
+import RepositoryMetro from '@/assets/bots/coopmetro/repository/RepositoryMetro'
 import { getClient } from '@/modules/Client/client'
 
 import { setBot } from '../../utils/utils'
+import { COOPERADO } from '../repository/InterfaceMetro'
 
 export async function stage1(message: MessageResponse) {
   const client: ClientType = await getClient(message.provider)
   if (validarCPFOuCNPJ(message.message.text).valido) {
+    const data = await RepositoryMetro.getData(message.conversationId)
+    client.sendText(
+      message.identifier,
+      '🔄 Buscando seus dados, por favor aguarde...',
+    )
+
+    const document = aplicarMascara(message.message.text)
+    const request = {
+      ID: '',
+      CNPJCPFCOOPERADO: document,
+      NOMEMAECOOPERADO: data.name_mother,
+      OPERACAO: '',
+    }
+    const retornoAPI = (await RepositoryMetro.getAPI(
+      'cooperado',
+      request,
+    )) as COOPERADO[]
+
+    if (!retornoAPI || !retornoAPI[0] || !retornoAPI[0].COOPERADO) {
+      const messageReturn = {
+        type: 'text',
+        text: 'Dados errados❌. Por favor, verifique o CPF/CNPJ e o nome da mãe e tente novamente.',
+      }
+      await addMessageUser(
+        message.conversationId,
+        'chat',
+        message.identifier,
+        messageReturn,
+        'B',
+        true,
+      )
+      client.sendText(message.identifier, messageReturn.text)
+      setTimeout(() => {
+        client.sendText(
+          message.identifier,
+          'Digite novamente o nome completo de sua mãe.',
+        )
+      }, 200)
+      await setBot(message.conversationId, 'coopmetro', 1)
+      return
+    }
+
+    await RepositoryMetro.updateData(message.conversationId, {
+      document,
+      name: retornoAPI[0].COOPERADO,
+    })
+
     const list = {
       type: 'list',
-      title: 'Obrigado. Estou falando com #NOMECOOPERADO?', // optional
+      title: 'Obrigado. Estou falando com ' + retornoAPI[0].COOPERADO, // optional
       buttonText: 'Clique aqui!', // required
       description: 'Selecione uma opção!', // required
       sections: [
@@ -32,7 +81,7 @@ export async function stage1(message: MessageResponse) {
     client.sendListMessage(message.identifier, list)
     await addMessageUser(
       message.conversationId,
-      'list',
+      'list', //
       message.identifier,
       list,
       'B',
@@ -82,43 +131,26 @@ function validarCPFOuCNPJ(valor: string): { tipo: string; valido: boolean } {
     return true
   }
 
-  function validarCNPJ(cnpj: string): boolean {
-    if (cnpj.length !== 14) return false
-
-    let tamanho = cnpj.length - 2
-    let numeros = cnpj.substring(0, tamanho)
-    const digitos = cnpj.substring(tamanho)
-    let soma = 0
-    let pos = tamanho - 7
-
-    for (let i = tamanho; i >= 1; i--) {
-      soma += parseInt(numeros.charAt(tamanho - i)) * pos--
-      if (pos < 2) pos = 9
-    }
-
-    let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11)
-    if (resultado !== parseInt(digitos.charAt(0))) return false
-
-    tamanho = tamanho + 1
-    numeros = cnpj.substring(0, tamanho)
-    soma = 0
-    pos = tamanho - 7
-    for (let i = tamanho; i >= 1; i--) {
-      soma += parseInt(numeros.charAt(tamanho - i)) * pos--
-      if (pos < 2) pos = 9
-    }
-
-    resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11)
-    if (resultado !== parseInt(digitos.charAt(1))) return false
-
-    return true
-  }
-
   if (numeros.length === 11) {
     return { tipo: 'CPF', valido: validarCPF(numeros) }
   } else if (numeros.length === 14) {
-    return { tipo: 'CNPJ', valido: validarCNPJ(numeros) }
+    return { tipo: 'CNPJ', valido: true }
   } else {
     return { tipo: 'Desconhecido', valido: false }
+  }
+}
+
+function aplicarMascara(documento: string): string {
+  documento = documento.replace(/\D/g, '')
+  if (documento.length === 11) {
+    return documento.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+  } else if (documento.length === 14) {
+    return documento.replace(
+      /(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,
+      '$1.$2.$3/$4-$5',
+    )
+  } else {
+    // Documento inválido
+    return 'Documento inválido'
   }
 }

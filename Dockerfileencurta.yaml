@@ -1,0 +1,45 @@
+version: '3.3'
+
+services:
+  nx-encurtador:
+    image: 'op3000/nxencurtador:1.0.4'
+    privileged: true
+    container_name: nxencurtador
+    restart: unless-stopped
+    ports:
+      - '8086:8093'
+    environment:
+      DB_NAME: 'nxEncurtador'
+      DB_URL: ${URL_MONGO}
+      URL: 'https://encurtador.nexum.com.br'
+    networks:
+      - app_network
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: nxzap
+      MONGO_INITDB_ROOT_PASSWORD: Av3M6ZZ3cSKRa5zGE7
+      PUID: 1000
+      PGID: 1000
+    logging:
+      options:
+        max-size: 1g
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app_network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  app_network:
+    driver: bridge

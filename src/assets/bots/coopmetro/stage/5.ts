@@ -4,9 +4,14 @@ import { addMessageUser } from '@/assets/api2/services/response/response'
 import { setBot } from '@/assets/bots/utils/utils'
 import { getClient } from '@/modules/Client/client'
 
+import RepositoryMetro from '../repository/RepositoryMetro'
+
 export async function stage5(message: MessageResponse) {
   const client: ClientType = await getClient(message.provider)
-  if (message.message.text === 'Operações') {
+  if (
+    message.message.text === 'Solicitação' ||
+    message.message.text === 'Reclamação'
+  ) {
     const list = {
       type: 'list',
       buttonText: 'Clique aqui!', // required
@@ -24,6 +29,10 @@ export async function stage5(message: MessageResponse) {
               rowId: 'rowid2',
               title: 'Mercado Livre',
             },
+            {
+              rowId: 'rowid3',
+              title: 'Portal',
+            },
           ],
         },
       ],
@@ -38,10 +47,13 @@ export async function stage5(message: MessageResponse) {
     )
     client.sendListMessage(message.identifier, list)
     await setBot(message.conversationId, 'coopmetro', 6)
-  } else if (message.message.text === 'Lojas Cooperado') {
+  } else if (
+    message.message.text === 'Sugestão / Elogios' ||
+    message.message.text === 'Inovação / Melhorias'
+  ) {
     const messageReturn = {
       type: 'text',
-      text: 'Aguarde um momento, estou transferindo para um dos nosso consultores. Obrigado!',
+      text: 'Descreva sua solicação, por favor.',
     }
     await addMessageUser(
       message.conversationId,
@@ -52,21 +64,7 @@ export async function stage5(message: MessageResponse) {
       true,
     )
     client.sendText(message.identifier, messageReturn.text)
-  } else if (message.message.text === 'Portal') {
-    const messageReturn = {
-      type: 'text',
-      text: 'Para informações sobre cadastro e acesso aos dados do Portal, solicito que acesse o site #SITE. Lá você poderá verificar seus dados cadastrais, recuperar senhas e muito mais. Obrigado!',
-    }
-    await addMessageUser(
-      message.conversationId,
-      'chat',
-      message.identifier,
-      messageReturn,
-      'B',
-      true,
-    )
-    client.sendText(message.identifier, messageReturn.text)
-    await setBot(message.conversationId, 'NDA', null)
+    await setBot(message.conversationId, 'coopmetro', 12)
   } else {
     const messageReturn = {
       type: 'text',
@@ -81,5 +79,9 @@ export async function stage5(message: MessageResponse) {
       true,
     )
     client.sendText(message.identifier, messageReturn.text)
+    return
   }
+  await RepositoryMetro.updateData(message.conversationId, {
+    type_service: message.message.text,
+  })
 }

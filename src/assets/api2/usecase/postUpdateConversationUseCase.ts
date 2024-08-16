@@ -3,7 +3,10 @@ import { Request, Response } from 'express'
 import { updateConversationRequest } from '@/assets/api2/enums/enumRequest.js'
 import { updateStatusConversation } from '@/assets/api2/services/response/response.js'
 
-export async function PostUpdateConversation(req: Request, res: Response) {
+export async function PostUpdateConversationUseCase(
+  req: Request,
+  res: Response,
+) {
   try {
     const {
       conversationId,

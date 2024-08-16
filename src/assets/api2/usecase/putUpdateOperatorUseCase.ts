@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import { updateOperatorRequest } from '@/assets/api2/enums/enumRequest.js'
 import { updateOperatorId } from '@/assets/api2/services/response/response.js'
 
-export async function PutUpdateOperator(req: Request, res: Response) {
+export async function PutUpdateOperatorUseCase(req: Request, res: Response) {
   try {
     const { conversationId, operatorId, deptoId }: updateOperatorRequest =
       req.body
